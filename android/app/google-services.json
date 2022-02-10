@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "483676902765",
+    "project_id": "ide-app-e8160",
+    "storage_bucket": "ide-app-e8160.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:483676902765:android:9b5fab3983224d1890f664",
+        "android_client_info": {
+          "package_name": "com.gracali.ide_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "483676902765-ll27f63dkoo6eu5du1r4h2ed9a38mt04.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYShrHWNvsGQ6I6oNBVcuxsGiJAGWqLcQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "483676902765-ll27f63dkoo6eu5du1r4h2ed9a38mt04.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "483676902765-014p3hbehupnau1tt0i7sejpo62hg2v8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ide-app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
