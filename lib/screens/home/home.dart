@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ide_app/models/stat.dart';
 import 'package:ide_app/services/auth.dart';
-import 'package:ide_app/services/database.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatelessWidget {

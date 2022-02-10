@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_tutorials/widgets/nav-drawer.dart';
-
 void main() {
   runApp(MyApp());
 }
@@ -25,7 +23,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(),
     );
   }
 }
@@ -33,10 +31,10 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold (
-      drawer: NavDrawer(),
-      appBar:AppBar(
-        title:Text('Side Menu'),
+    return Scaffold(
+      // drawer: NavDrawer(),
+      appBar: AppBar(
+        title: Text('Side Menu'),
       ),
       body: Center(
         child: Text('Side Menu Tester'),
