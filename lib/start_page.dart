@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:ide_app/calendar_page.dart';
+import 'package:ide_app/myTaskPage.dart';
 
 void main() {
   runApp(MyApp());
@@ -31,12 +32,13 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
+  const MyHomePage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Project Manager")),
+      appBar: AppBar(title: Text("Home")),
       body: const Center(
-        child: Text('My projects'),
+        child: Text('where we would list your personal projects'),
       ),
       drawer: Drawer(
         // Add a ListView to the drawer. This ensures the user can scroll
@@ -67,7 +69,10 @@ class MyHomePage extends StatelessWidget {
                 // Update the state of the app
                 // ...
                 // Then close the drawer
-                Navigator.pop(context);
+                Navigator.pushReplacement(
+                  context, 
+                  MaterialPageRoute(builder: (context) => const TaskPage()),
+                );
               },
             ),
             ListTile(
@@ -75,10 +80,10 @@ class MyHomePage extends StatelessWidget {
               onTap: () {
                 // Update the state of the app
                 // ...
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => CalendarPage()));
-                // Then close the drawer
-                Navigator.pop(context);
+                Navigator.pushReplacement(
+                  context, 
+                  MaterialPageRoute(builder: (context) => const CalendarPage()),
+                );
               },
             ),
           ],
