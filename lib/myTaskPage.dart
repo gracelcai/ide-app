@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:ide_app/start_page.dart';
-import 'package:ide_app/myTaskPage.dart';
+import 'package:ide_app/calendar_page.dart';
 
-class CalendarPage extends StatelessWidget {
-  const CalendarPage({Key? key}) : super(key: key);
+class TaskPage extends StatelessWidget {
+  const TaskPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("My Calendar")),
+      appBar: AppBar(title: Text("My Tasks")),
       body: const Center(
-        child: Text('where we would include a calendar compiled with all of your tasks and meetings'),
+        child: Text('A list view of your tasks and meetings, with personal tasks'),
       ),
       drawer: Drawer(
         // Add a ListView to the drawer. This ensures the user can scroll
@@ -41,10 +41,7 @@ class CalendarPage extends StatelessWidget {
                 // Update the state of the app
                 // ...
                 // Then close the drawer
-                Navigator.pushReplacement(
-                  context, 
-                  MaterialPageRoute(builder: (context) => const TaskPage()),
-                );
+                Navigator.pop(context);
               },
             ),
             ListTile(
@@ -53,7 +50,10 @@ class CalendarPage extends StatelessWidget {
                 // Update the state of the app
                 // ...
                 // Then close the drawer
-                Navigator.pop(context);
+                Navigator.pushReplacement(
+                  context, 
+                  MaterialPageRoute(builder: (context) => const CalendarPage()),
+                );
               },
             ),
           ],
