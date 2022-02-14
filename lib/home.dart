@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ide_app/authentication_service.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -24,7 +26,7 @@ class _HomeState extends State<Home> {
             IconButton(
                 icon: Icon(Icons.logout),
                 onPressed: () {
-                  // TODO: Implement Sign Out
+                  context.read<AuthenticationService>().signOut();
                   Navigator.pop(context);
                 })
           ],
