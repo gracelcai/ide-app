@@ -1,5 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ide_app/authentication_service.dart';
+import 'package:provider/provider.dart';
+
+import 'package:ide_app/helper.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -38,8 +42,9 @@ class _SignInState extends State<SignIn> {
                       Expanded(
                         child: TextFormField(
                             decoration: const InputDecoration(
-                                border: UnderlineInputBorder(),
-                                hintText: 'Email'),
+                              border: UnderlineInputBorder(),
+                              hintText: 'Email',
+                            ),
                             controller: emailTextController),
                       ),
                     ],
@@ -78,8 +83,13 @@ class _SignInState extends State<SignIn> {
                           side: const BorderSide(color: Colors.indigoAccent)),
                     ),
                     onPressed: () {
-                      // TODO: Implement Sign In method
-                      Navigator.pushNamed(context, '/home');
+                      context
+                          .read<AuthenticationService>()
+                          .signIn(
+                            email: emailTextController.text.trim(),
+                            password: passwordTextController.text.trim(),
+                          )
+                          .then((result) => showSnackbar(context, result!));
                     },
                     child: Text('SignIn'),
                   ),
