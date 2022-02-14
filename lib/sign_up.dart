@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:ide_app/authentication_service.dart';
+import 'package:provider/provider.dart';
+import 'package:ide_app/helper.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -77,9 +80,18 @@ class _SignUpState extends State<SignUp> {
                           side: const BorderSide(color: Colors.indigoAccent)),
                     ),
                     onPressed: () async {
-                      // TODO: Implement Sign Up method
+                      final result =
+                          await context.read<AuthenticationService>().signUp(
+                                email: emailTextController.text.trim(),
+                                password: passwordTextController.text.trim(),
+                              );
 
-                      Navigator.pushNamed(context, '/home');
+                      showSnackbar(context, result!);
+
+                      if (result == "Signed up") {
+                        Navigator.popUntil(
+                            context, ModalRoute.withName('/auth'));
+                      }
                     },
                     child: Text('Create Account'),
                   ),

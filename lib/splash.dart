@@ -61,7 +61,7 @@ class _SplashState extends State<Splash> {
       //TODO: Change to Auth
       Navigator.pushNamed(
         context,
-        '/signin',
+        '/auth',
       );
     });
   }
