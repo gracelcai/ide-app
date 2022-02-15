@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ide_app/start_page.dart';
+import 'package:ide_app/home.dart';
 import 'package:ide_app/myTaskPage.dart';
 
 class CalendarPage extends StatelessWidget {
@@ -10,7 +10,8 @@ class CalendarPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text("My Calendar")),
       body: const Center(
-        child: Text('where we would include a calendar compiled with all of your tasks and meetings'),
+        child: Text(
+            'where we would include a calendar compiled with all of your tasks and meetings'),
       ),
       drawer: Drawer(
         // Add a ListView to the drawer. This ensures the user can scroll
@@ -30,7 +31,7 @@ class CalendarPage extends StatelessWidget {
               title: const Text('My Projects'),
               onTap: () {
                 Navigator.pushReplacement(
-                  context, 
+                  context,
                   MaterialPageRoute(builder: (context) => const MyHomePage()),
                 );
               },
@@ -42,7 +43,7 @@ class CalendarPage extends StatelessWidget {
                 // ...
                 // Then close the drawer
                 Navigator.pushReplacement(
-                  context, 
+                  context,
                   MaterialPageRoute(builder: (context) => const TaskPage()),
                 );
               },
