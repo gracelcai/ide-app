@@ -23,16 +23,16 @@ class _SplashState extends State<Splash> {
             padding: const EdgeInsets.only(top: 60),
             child: Align(
               alignment: Alignment.topCenter,
-              child: Image.asset(
-                'assets/logo_lco.png',
-                width: itemWidth,
-                height: itemHeight,
-              ),
+              // child: Image.asset(
+              //   'assets/logo_lco.png',
+              //   width: itemWidth,
+              //   height: itemHeight,
+              // ),
             ),
           ),
           Center(
               child: Text(
-            "Flutter Firebase Auth",
+            "Group Project Manager",
             style: TextStyle(
                 color: Theme.of(context).primaryColor,
                 fontSize: 24,
@@ -42,11 +42,11 @@ class _SplashState extends State<Splash> {
             padding: const EdgeInsets.only(bottom: 40),
             child: Align(
               alignment: Alignment.bottomCenter,
-              child: Image.asset(
-                'assets/tag.png',
-                width: itemWidth,
-                height: itemHeight,
-              ),
+              // child: Image.asset(
+              //   'assets/tag.png',
+              //   width: itemWidth,
+              //   height: itemHeight,
+              // ),
             ),
           )
         ]),

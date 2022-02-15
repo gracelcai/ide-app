@@ -1,14 +1,32 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ide_app/authentication_service.dart';
 import 'package:provider/provider.dart';
 import 'package:ide_app/helper.dart';
 
 class SignUp extends StatefulWidget {
+  // final String name;
+  // final String email;
+
+  // SignUp(this.name, this.email);
+  // CollectionReference users = FirebaseFirestore.instance.collection('users');
+  // Future<void> signUp() {
+  //   // Call the user's CollectionReference to add a new user
+  //   return users
+  //       .add({
+  //         'name': name,
+  //         'email': email,
+  //       })
+  //       .then((value) => print("User Added"))
+  //       .catchError((error) => print("Failed to add user: $error"));
+  // }
+
   @override
   _SignUpState createState() => _SignUpState();
 }
 
 class _SignUpState extends State<SignUp> {
+  TextEditingController nameTextController = TextEditingController();
   TextEditingController emailTextController = TextEditingController();
   TextEditingController passwordTextController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -33,6 +51,20 @@ class _SignUpState extends State<SignUp> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                            decoration: const InputDecoration(
+                                border: UnderlineInputBorder(),
+                                hintText: 'Name'),
+                            controller: nameTextController),
+                      ),
+                    ],
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Row(
@@ -82,6 +114,7 @@ class _SignUpState extends State<SignUp> {
                     onPressed: () async {
                       final result =
                           await context.read<AuthenticationService>().signUp(
+                                name: nameTextController.text.trim(),
                                 email: emailTextController.text.trim(),
                                 password: passwordTextController.text.trim(),
                               );
