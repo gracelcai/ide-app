@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ide_app/authentication_service.dart';
+import 'package:ide_app/new_project.dart';
 import 'package:provider/provider.dart';
 import 'package:ide_app/calendar_page.dart';
 import 'package:ide_app/myTaskPage.dart';
@@ -33,7 +34,15 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text("Home")),
       body: const Center(
-        child: Text('where we would list your personal projects'),
+        child: ElevatedButton(
+          child: const Text('New Project'),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const NewProject()),
+            );
+          },
+        ),
       ),
       drawer: Drawer(
         // Add a ListView to the drawer. This ensures the user can scroll
