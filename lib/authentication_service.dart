@@ -31,13 +31,10 @@ class AuthenticationService {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
       CollectionReference users =
           FirebaseFirestore.instance.collection('users');
-      await _firebaseAuth.createUserWithEmailAndPassword(
+      UserCredential user = await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
       users
-          .add({
-            'name': name,
-            'email': email,
-          })
+          .add({'name': name, 'email': email, 'userid': user.user!.uid})
           .then((value) => print("$value User Added"))
           .catchError((error) => print("Failed to add user: $error"));
 
