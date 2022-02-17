@@ -31,15 +31,16 @@ class AuthenticationService {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
       CollectionReference users =
           FirebaseFirestore.instance.collection('users');
+      await _firebaseAuth.createUserWithEmailAndPassword(
+          email: email, password: password);
       users
           .add({
             'name': name,
             'email': email,
           })
-          .then((value) => print("User Added"))
+          .then((value) => print("$value User Added"))
           .catchError((error) => print("Failed to add user: $error"));
-      await _firebaseAuth.createUserWithEmailAndPassword(
-          email: email, password: password);
+
       return "Signed up";
     } on FirebaseAuthException catch (e) {
       return e.message;
