@@ -33,15 +33,15 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Home")),
-      body: const Center(
+      body: Center(
         child: ElevatedButton(
-          child: const Text('New Project'),
           onPressed: () {
-            Navigator.pushReplacement(
+            Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const NewProject()),
             );
           },
+          child: Text('New Project'),
         ),
       ),
       drawer: Drawer(
