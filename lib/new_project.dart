@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ide_app/home.dart';
 import 'package:ide_app/myTaskPage.dart';
+import 'package:ide_app/database_service.dart';
+import 'package:provider/provider.dart';
 
 class NewProject extends StatelessWidget {
   const NewProject({Key? key}) : super(key: key);
@@ -9,14 +11,16 @@ class NewProject extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("New Project")),
-      body: const ProjectInfo(),
+      body: ProjectInfo(),
     );
   }
 }
 
 class ProjectInfo extends StatelessWidget {
-  const ProjectInfo({Key? key}) : super(key: key);
-
+  ProjectInfo({Key? key}) : super(key: key);
+  TextEditingController titleTextController = TextEditingController();
+  TextEditingController descriptionTextController = TextEditingController();
+  TextEditingController goalsTextController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -29,6 +33,7 @@ class ProjectInfo extends StatelessWidget {
               border: UnderlineInputBorder(),
               labelText: 'Project Title',
             ),
+            controller: titleTextController,
           ),
         ),
         Padding(
@@ -38,6 +43,7 @@ class ProjectInfo extends StatelessWidget {
               border: UnderlineInputBorder(),
               labelText: 'Project Description',
             ),
+            controller: descriptionTextController,
           ),
         ),
         Padding(
@@ -47,12 +53,17 @@ class ProjectInfo extends StatelessWidget {
               border: UnderlineInputBorder(),
               labelText: 'Project Goals',
             ),
+            controller: goalsTextController,
           ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
           child: ElevatedButton(
             onPressed: () {
+              context.read<DatabaseService>().createProject(
+                  titleTextController.text,
+                  descriptionTextController.text,
+                  goalsTextController.text);
               //also needs to somehow make a project that shows up in home page
               Navigator.push(
                 context,

@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:ide_app/database_service.dart';
 import 'package:ide_app/sign_up.dart';
 import 'package:ide_app/splash.dart';
 import 'authentication_service.dart';
@@ -41,7 +43,17 @@ class MyApp extends StatelessWidget {
           create: (context) =>
               context.read<AuthenticationService>().authStateChanges,
           initialData: null,
-        )
+        ),
+        // 2
+        Provider<DatabaseService>(
+          create: (_) => DatabaseService(FirebaseFirestore.instance),
+        ),
+        // 3
+        // StreamProvider(
+        //   create: (context) =>
+        //       context.read<DatabaseService>(),
+        //   initialData: null,
+        // )
       ],
       child: MaterialApp(
         title: 'Project Manager',

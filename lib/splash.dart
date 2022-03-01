@@ -38,17 +38,6 @@ class _SplashState extends State<Splash> {
                 fontSize: 24,
                 fontWeight: FontWeight.w700),
           )),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 40),
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              // child: Image.asset(
-              //   'assets/tag.png',
-              //   width: itemWidth,
-              //   height: itemHeight,
-              // ),
-            ),
-          )
         ]),
       ),
     );
