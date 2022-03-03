@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:ide_app/authentication_service.dart';
 import 'package:ide_app/new_project.dart';
+import 'package:ide_app/projects.dart';
 import 'package:provider/provider.dart';
 // import 'package:ide_app/calendar_page.dart';
 // import 'package:ide_app/myTaskPage.dart';
 import 'package:ide_app/widgets/drawer.dart';
+
+List<Project> myProjects = [];
 
 class Home extends StatelessWidget {
   @override
@@ -23,7 +26,7 @@ class Home extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(),
+      home: const MyHomePage(),
     );
   }
 }
@@ -33,7 +36,7 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Projects Home")),
+      appBar: AppBar(title: const Text("Projects Home")),
       body: Center(
         child: ElevatedButton(
           onPressed: () {
