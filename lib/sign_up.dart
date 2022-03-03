@@ -5,22 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:ide_app/helper.dart';
 
 class SignUp extends StatefulWidget {
-  // final String name;
-  // final String email;
-
-  // SignUp(this.name, this.email);
-  // CollectionReference users = FirebaseFirestore.instance.collection('users');
-  // Future<void> signUp() {
-  //   // Call the user's CollectionReference to add a new user
-  //   return users
-  //       .add({
-  //         'name': name,
-  //         'email': email,
-  //       })
-  //       .then((value) => print("User Added"))
-  //       .catchError((error) => print("Failed to add user: $error"));
-  // }
-
   @override
   _SignUpState createState() => _SignUpState();
 }
@@ -112,18 +96,30 @@ class _SignUpState extends State<SignUp> {
                           side: const BorderSide(color: Colors.indigoAccent)),
                     ),
                     onPressed: () async {
-                      final result =
-                          await context.read<AuthenticationService>().signUp(
-                                name: nameTextController.text.trim(),
-                                email: emailTextController.text.trim(),
-                                password: passwordTextController.text.trim(),
-                              );
+                      String name = nameTextController.text.trim();
+                      String email = emailTextController.text.trim();
+                      String password = passwordTextController.text.trim();
+                      final result = await context
+                          .read<AuthenticationService>()
+                          .signUp(name: name, email: email, password: password);
 
                       showSnackbar(context, result!);
 
                       if (result == "Signed up") {
                         Navigator.popUntil(
                             context, ModalRoute.withName('/auth'));
+                        // FirebaseFirestore firestore =
+                        //     FirebaseFirestore.instance;
+                        // CollectionReference users =
+                        //     FirebaseFirestore.instance.collection('users');
+                        // userDoc = users
+                        //     .add({'name': name, 'email': email})
+                        //     .then((value) => () {
+                        //           print("$value User Added");
+                        //
+                        //         })
+                        //     .catchError(
+                        //         (error) => print("Failed to add user: $error"));
                       }
                     },
                     child: Text('Create Account'),

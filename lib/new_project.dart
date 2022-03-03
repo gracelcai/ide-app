@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ide_app/home.dart';
 import 'package:ide_app/myTaskPage.dart';
 import 'package:ide_app/database_service.dart';
 import 'package:provider/provider.dart';
+import 'authentication_service.dart';
 
 class NewProject extends StatelessWidget {
   const NewProject({Key? key}) : super(key: key);
@@ -60,10 +63,12 @@ class ProjectInfo extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
           child: ElevatedButton(
             onPressed: () {
+              final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
               context.read<DatabaseService>().createProject(
                   titleTextController.text,
                   descriptionTextController.text,
-                  goalsTextController.text);
+                  goalsTextController.text,
+                  AuthenticationService(_firebaseAuth).getUser()!.uid);
               //also needs to somehow make a project that shows up in home page
               Navigator.push(
                 context,

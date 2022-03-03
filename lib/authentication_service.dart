@@ -10,6 +10,7 @@ class AuthenticationService {
   // 2
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
 
+  late Future<void> userDoc;
   // 3
   Future<String?> signIn(
       {required String email, required String password}) async {
@@ -31,10 +32,12 @@ class AuthenticationService {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
       CollectionReference users =
           FirebaseFirestore.instance.collection('users');
-      UserCredential user = await _firebaseAuth.createUserWithEmailAndPassword(
-          email: email, password: password);
-      users
-          .add({'name': name, 'email': email, 'userid': user.user!.uid})
+      UserCredential userCred = await _firebaseAuth
+          .createUserWithEmailAndPassword(email: email, password: password);
+      userCred.user!.updateDisplayName(name);
+
+      userDoc = users
+          .add({'name': name, 'email': email, 'userid': userCred.user!.uid})
           .then((value) => print("$value User Added"))
           .catchError((error) => print("Failed to add user: $error"));
 
@@ -61,5 +64,9 @@ class AuthenticationService {
     } on FirebaseAuthException {
       return null;
     }
+  }
+
+  Future<void> getUserDoc() {
+    return userDoc;
   }
 }
