@@ -19,17 +19,6 @@ class _SplashState extends State<Splash> {
     return Scaffold(
       body: SafeArea(
         child: Stack(children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 60),
-            child: Align(
-              alignment: Alignment.topCenter,
-              // child: Image.asset(
-              //   'assets/logo_lco.png',
-              //   width: itemWidth,
-              //   height: itemHeight,
-              // ),
-            ),
-          ),
           Center(
               child: Text(
             "Group Project Manager",
