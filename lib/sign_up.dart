@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ide_app/authentication_service.dart';
@@ -29,7 +31,9 @@ class _SignUpState extends State<SignUp> {
         ),
       ),
       body: SafeArea(
+        minimum: const EdgeInsets.all(100.0),
         child: Center(
+          // widthFactor: 2.0,
           child: Form(
             key: _formKey,
             child: Column(
@@ -65,20 +69,13 @@ class _SignUpState extends State<SignUp> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                            enableSuggestions: false,
-                            autocorrect: false,
-                            obscureText: true,
-                            decoration: const InputDecoration(
-                                border: UnderlineInputBorder(),
-                                hintText: 'Password'),
-                            controller: passwordTextController),
-                      ),
-                    ],
-                  ),
+                  child: TextFormField(
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                          border: UnderlineInputBorder(), hintText: 'Password'),
+                      controller: passwordTextController),
                 ),
                 const SizedBox(
                   height: 16,
@@ -139,7 +136,7 @@ class _SignUpState extends State<SignUp> {
                         style: TextStyle(
                             color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.w600),
-                      )
+                      ),
                     ],
                   ),
                 )

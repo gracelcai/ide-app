@@ -10,26 +10,29 @@ class DatabaseService {
       FirebaseFirestore.instance.collection('projects');
   CollectionReference users = FirebaseFirestore.instance.collection('users');
   Future<void> createProject(
-      String title, String description, String goals, String uid) async {
+      String title, String description, String goals, User user) async {
     // Call the user's CollectionReference to add a new user
     // array of references user's projects in user document
     // projects in separate collection with array of references to members
-    QuerySnapshot querySnap = await users.where('userid', isEqualTo: uid).get();
-    print("uid: " + uid);
-    print(querySnap.docs.length);
-    QueryDocumentSnapshot doc = querySnap.docs[
-        0]; // Assumption: the query returns only one document, THE doc you are looking for.
 
+    QuerySnapshot querySnap =
+        await users.where('userid', isEqualTo: user.uid).get();
+    QueryDocumentSnapshot doc = querySnap.docs[0];
     DocumentReference docRef = doc.reference;
-// await docRef.update(...);
-    return projects
+
+    Future<void> project = projects
         .add({
           'title': title,
           'description': description,
           'goals': goals, // add members
           'owner': docRef
         })
-        .then((value) => print("Project Created"))
+        .then((value) => () {
+              docRef.update({
+                'projects': value
+              }); // replaces user's project, need to add to array instead?
+            })
         .catchError((error) => print("Failed to create project: $error"));
+    return project;
   }
 }

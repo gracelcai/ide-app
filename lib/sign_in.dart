@@ -29,6 +29,7 @@ class _SignInState extends State<SignIn> {
         ),
       ),
       body: SafeArea(
+        minimum: const EdgeInsets.all(100.0),
         child: Center(
           child: Form(
             key: _formKey,
@@ -91,7 +92,7 @@ class _SignInState extends State<SignIn> {
                           )
                           .then((result) => showSnackbar(context, result!));
                     },
-                    child: Text('SignIn'),
+                    child: Text('Sign In'),
                   ),
                 ),
                 const SizedBox(

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:ide_app/authentication_service.dart';
+// import 'package:ide_app/authentication_service.dart';
 import 'package:ide_app/new_project.dart';
-import 'package:provider/provider.dart';
+// import 'package:provider/provider.dart';
 // import 'package:ide_app/calendar_page.dart';
 // import 'package:ide_app/myTaskPage.dart';
 import 'package:ide_app/widgets/drawer.dart';
 
 class Home extends StatelessWidget {
+  const Home({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

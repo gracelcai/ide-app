@@ -68,7 +68,7 @@ class ProjectInfo extends StatelessWidget {
                   titleTextController.text,
                   descriptionTextController.text,
                   goalsTextController.text,
-                  AuthenticationService(_firebaseAuth).getUser()!.uid);
+                  AuthenticationService(_firebaseAuth).getUser()!);
               //also needs to somehow make a project that shows up in home page
               Navigator.push(
                 context,

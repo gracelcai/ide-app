@@ -11,7 +11,7 @@ class AuthenticationService {
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
 
   late Future<void> userDoc;
-  // 3
+
   Future<String?> signIn(
       {required String email, required String password}) async {
     try {
@@ -23,7 +23,6 @@ class AuthenticationService {
     }
   }
 
-  // 4
   Future<String?> signUp(
       {required String name,
       required String email,
