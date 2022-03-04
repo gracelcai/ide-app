@@ -28,11 +28,16 @@ class DatabaseService {
           'owner': docRef
         })
         .then((value) => () {
-              docRef.update({
-                'projects': value
-              }); // replaces user's project, need to add to array instead?
+              // docRef.update({ // not working
+              //   'projects': FieldValue.arrayUnion([value])
+              // }); // replaces user's project, need to add to array instead?
+              print("Created project");
             })
-        .catchError((error) => print("Failed to create project: $error"));
+        .catchError((error) => () {
+              print("Failed to create project: $error");
+              return;
+            });
+
     return project;
   }
 }
