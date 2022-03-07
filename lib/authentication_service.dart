@@ -34,9 +34,14 @@ class AuthenticationService {
       UserCredential userCred = await _firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: password);
       userCred.user!.updateDisplayName(name);
-
+      List<DocumentReference> projects = [];
       userDoc = users
-          .add({'name': name, 'email': email, 'userid': userCred.user!.uid})
+          .add({
+            'name': name,
+            'email': email,
+            'userid': userCred.user!.uid,
+            'projects': projects
+          })
           .then((value) => print("$value User Added"))
           .catchError((error) => print("Failed to add user: $error"));
 

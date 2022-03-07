@@ -9,6 +9,7 @@ class DatabaseService {
   CollectionReference projects =
       FirebaseFirestore.instance.collection('projects');
   CollectionReference users = FirebaseFirestore.instance.collection('users');
+
   Future<void> createProject(
       String title, String description, String goals, User user) async {
     // Call the user's CollectionReference to add a new user
@@ -27,17 +28,13 @@ class DatabaseService {
           'goals': goals, // add members
           'owner': docRef
         })
-        .then((value) => () {
-              // docRef.update({ // not working
-              //   'projects': FieldValue.arrayUnion([value])
-              // }); // replaces user's project, need to add to array instead?
-              print("Created project");
-            })
-        .catchError((error) => () {
-              print("Failed to create project: $error");
-              return;
-            });
+        .then((value) => (docRef.update({
+              // not working
+              'projects': FieldValue.arrayUnion([value])
+            })))
+        .catchError((error) => () {});
 
+    print("Created project");
     return project;
   }
 }
