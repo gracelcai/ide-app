@@ -30,6 +30,7 @@ dependencies:
   flutter:
     sdk: flutter
   firebase_core: ^1.12.0
+  syncfusion_flutter_calendar: ^19.4.54
 
   # cloud_firestore: ^0.12.9+5
 
