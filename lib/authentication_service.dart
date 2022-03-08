@@ -11,7 +11,7 @@ class AuthenticationService {
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
 
   late Future<void> userDoc;
-
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
   Future<String?> signIn(
       {required String email, required String password}) async {
     try {
@@ -70,7 +70,12 @@ class AuthenticationService {
     }
   }
 
-  Future<void> getUserDoc() {
+  Future<DocumentReference<Object?>> getUserDoc() async {
+    User? user = _firebaseAuth.currentUser;
+    QuerySnapshot querySnap =
+        await users.where('userid', isEqualTo: user!.uid).get();
+    QueryDocumentSnapshot doc = querySnap.docs[0];
+    DocumentReference userDoc = doc.reference;
     return userDoc;
   }
 }

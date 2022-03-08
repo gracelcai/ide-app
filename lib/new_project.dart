@@ -70,10 +70,7 @@ class ProjectInfo extends StatelessWidget {
                   goalsTextController.text,
                   AuthenticationService(_firebaseAuth).getUser()!);
               //also needs to somehow make a project that shows up in home page
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const MyHomePage()),
-              );
+              Navigator.pop(context);
             },
             child: const Text('Create Project'),
           ),

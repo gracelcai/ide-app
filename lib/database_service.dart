@@ -9,6 +9,7 @@ class DatabaseService {
   CollectionReference projects =
       FirebaseFirestore.instance.collection('projects');
   CollectionReference users = FirebaseFirestore.instance.collection('users');
+  late DocumentReference userRef;
 
   Future<void> createProject(
       String title, String description, String goals, User user) async {
@@ -19,22 +20,39 @@ class DatabaseService {
     QuerySnapshot querySnap =
         await users.where('userid', isEqualTo: user.uid).get();
     QueryDocumentSnapshot doc = querySnap.docs[0];
-    DocumentReference docRef = doc.reference;
+    userRef = doc.reference;
 
     Future<void> project = projects
         .add({
           'title': title,
           'description': description,
           'goals': goals, // add members
-          'owner': docRef
+          'owner': userRef
         })
-        .then((value) => (docRef.update({
-              // not working
+        .then((value) => (userRef.update({
               'projects': FieldValue.arrayUnion([value])
-            })))
+            }))) // add to array in user's doc
         .catchError((error) => () {});
 
     print("Created project");
     return project;
+  }
+
+  // Future<DocumentSnapshot<Object?>> getProjects(User user) async {
+  //   QuerySnapshot querySnap =
+  //       await users.where('userid', isEqualTo: user.uid).get();
+  //   QueryDocumentSnapshot doc = querySnap.docs[0];
+  //   DocumentReference docRef = doc.reference;
+  //   Future<DocumentSnapshot<Object?>> projects = docRef.get();
+
+  //   return projects;
+  // }
+
+  Future<DocumentReference<Object?>> getUserDoc(User user) async {
+    QuerySnapshot querySnap =
+        await users.where('userid', isEqualTo: user.uid).get();
+    QueryDocumentSnapshot doc = querySnap.docs[0];
+    DocumentReference docRef = doc.reference;
+    return docRef;
   }
 }

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 // import 'package:ide_app/authentication_service.dart';
 import 'package:ide_app/new_project.dart';
@@ -28,29 +29,59 @@ class Home extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(),
+      home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  MyHomePage({Key? key}) : super(key: key);
+  final Stream<QuerySnapshot> _projectsStream =
+      FirebaseFirestore.instance.collection('projects').snapshots();
+  final Stream<QuerySnapshot> _userssStream =
+      FirebaseFirestore.instance.collection('users').snapshots();
+  CollectionReference projects =
+      FirebaseFirestore.instance.collection('projects');
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Projects Home")),
       body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const NewProject()),
-            );
-          },
-          child: const Text('New Project'),
-        ),
-      ),
+          child: StreamBuilder<QuerySnapshot>(
+        stream: _projectsStream,
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return Text('Something went wrong');
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Text("Loading");
+          }
+
+          return ListView(
+            children: snapshot.data!.docs.map((DocumentSnapshot document) {
+              Map<String, dynamic> data =
+                  document.data()! as Map<String, dynamic>;
+              // print(data["title"]);
+              return ListTile(
+                title: Text(data["title"]),
+                subtitle: Text(data["description"]),
+              );
+            }).toList(),
+          );
+        },
+      )),
       drawer: SideMenu(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const NewProject()),
+          );
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
 }
