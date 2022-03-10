@@ -58,7 +58,8 @@ class DatabaseService {
     return docRef;
   }
 
-  void test() {
+  String getUserDocId() {
     DocumentReference ref = getUserDoc() as DocumentReference;
+    return (ref.id);
   }
 }
