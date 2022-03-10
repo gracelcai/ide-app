@@ -53,6 +53,22 @@ class DatabaseService {
         await users.where('userid', isEqualTo: user.uid).get();
     QueryDocumentSnapshot doc = querySnap.docs[0];
     DocumentReference docRef = doc.reference;
+
     return docRef;
+  }
+
+  Future<void> addTask(String task) {
+    await FirebaseFirestore
+    .instance
+    .collection('orders')
+    .doc(user.uid)
+    .collection(
+        "user_orders")
+    .add({
+        'task': task,
+        'complete': false,
+        });
+    print("Added task");
+    return task;
   }
 }
