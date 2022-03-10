@@ -4,7 +4,7 @@ import 'package:ide_app/authentication_service.dart';
 
 class DatabaseService {
   final FirebaseFirestore _firebaseFirestore;
-
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   DatabaseService(this._firebaseFirestore);
   CollectionReference projects =
       FirebaseFirestore.instance.collection('projects');
@@ -48,9 +48,10 @@ class DatabaseService {
   //   return projects;
   // }
 
-  Future<DocumentReference<Object?>> getUserDoc(User user) async {
+  Future<DocumentReference<Object?>> getUserDoc() async {
+    User? user = AuthenticationService(_firebaseAuth).getUser();
     QuerySnapshot querySnap =
-        await users.where('userid', isEqualTo: user.uid).get();
+        await users.where('userid', isEqualTo: user!.uid).get();
     QueryDocumentSnapshot doc = querySnap.docs[0];
     DocumentReference docRef = doc.reference;
 
