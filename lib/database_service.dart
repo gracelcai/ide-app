@@ -35,6 +35,7 @@ class DatabaseService {
         .catchError((error) => () {});
 
     print("Created project");
+
     return project;
   }
 
@@ -58,11 +59,17 @@ class DatabaseService {
     return docRef;
   }
 
+
+  String getUserDocId() {
+    DocumentReference ref = getUserDoc() as DocumentReference;
+    return (ref.id);
+  }
+
   Future<void> addTask(String task) {
     await FirebaseFirestore
     .instance
     .collection('orders')
-    .doc(user.uid)
+    .doc(getUserDocId())
     .collection(
         "user_orders")
     .add({
@@ -72,4 +79,5 @@ class DatabaseService {
     print("Added task");
     return task;
   }
+
 }
