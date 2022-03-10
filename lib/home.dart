@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:ide_app/database_service.dart';
 // import 'package:ide_app/authentication_service.dart';
 import 'package:ide_app/new_project.dart';
 import 'package:ide_app/projects.dart';
@@ -7,6 +8,7 @@ import 'package:ide_app/projects.dart';
 // import 'package:ide_app/calendar_page.dart';
 // import 'package:ide_app/myTaskPage.dart';
 import 'package:ide_app/widgets/drawer.dart';
+import 'package:provider/provider.dart';
 
 List<Project> myProjects = [];
 
@@ -38,18 +40,44 @@ class MyHomePage extends StatelessWidget {
   MyHomePage({Key? key}) : super(key: key);
   final Stream<QuerySnapshot> _projectsStream =
       FirebaseFirestore.instance.collection('projects').snapshots();
-  final Stream<QuerySnapshot> _userssStream =
+  final Stream<QuerySnapshot> _usersStream =
       FirebaseFirestore.instance.collection('users').snapshots();
   CollectionReference projects =
       FirebaseFirestore.instance.collection('projects');
 
   @override
   Widget build(BuildContext context) {
+    List<DocumentReference> projectRefs = [];
+    DocumentReference userDoc = context.read<DatabaseService>().getUserDoc()
+        as DocumentReference<Object?>;
+    userDoc.get().then((value) => () {
+          List.from(value['projects']).forEach((element) {
+            //then add the data to the List<Offset>, now we have a type Offset
+            projectRefs.add(element);
+          });
+        });
     return Scaffold(
       appBar: AppBar(title: const Text("Projects Home")),
-      body: Center(
-          child: StreamBuilder<QuerySnapshot>(
-        stream: _projectsStream,
+      // body: Center(
+      //     child: ListView.builder(
+      //   // Let the ListView know how many items it needs to build.
+      //   itemCount: projectRefs.length,
+      //   // Provide a builder function. This is where the magic happens.
+      //   // Convert each item into a widget based on the type of item it is.
+      //   itemBuilder: (context, index) {
+      //     final ref = projectRefs[index];
+      //     DocumentSnapshot<Object?> project =
+      //         await projects.doc(ref.id).get();
+      //     var data = project.data() as Map<String, dynamic>;
+      //     print(data);
+      //     return ListTile(
+      //       title: Text(data["title"]),
+      //       subtitle: Text(data["description"]),
+      //     );
+      //   },
+      // )),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: _usersStream,
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
             return Text('Something went wrong');
@@ -63,15 +91,14 @@ class MyHomePage extends StatelessWidget {
             children: snapshot.data!.docs.map((DocumentSnapshot document) {
               Map<String, dynamic> data =
                   document.data()! as Map<String, dynamic>;
-              // print(data["title"]);
               return ListTile(
-                title: Text(data["title"]),
-                subtitle: Text(data["description"]),
+                title: Text(data['full_name']),
+                subtitle: Text(data['company']),
               );
             }).toList(),
           );
         },
-      )),
+      ),
       drawer: SideMenu(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
