@@ -35,6 +35,7 @@ class DatabaseService {
         .catchError((error) => () {});
 
     print("Created project");
+
     return project;
   }
 
@@ -55,5 +56,9 @@ class DatabaseService {
     QueryDocumentSnapshot doc = querySnap.docs[0];
     DocumentReference docRef = doc.reference;
     return docRef;
+  }
+
+  void test() {
+    DocumentReference ref = getUserDoc() as DocumentReference;
   }
 }
