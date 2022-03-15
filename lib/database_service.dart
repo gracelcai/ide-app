@@ -49,21 +49,14 @@ class DatabaseService {
   //   return projects;
   // }
 
-  // Future<DocumentReference<Object?>> getUserDoc() async {
-  //   User? user = AuthenticationService(_firebaseAuth).getUser();
-  //   QuerySnapshot querySnap =
-  //       await users.where('userid', isEqualTo: user!.uid).get();
-  //   QueryDocumentSnapshot doc = querySnap.docs[0];
-  //   DocumentReference docRef = doc.reference;
-
-  //   return docRef;
-  // }
-
-  // String getUserDocId() {
-  //   Future<DocumentReference<Object?>> ref = getUserDoc();
-  //   print(ref.toString());
-  //   return ref.toString();
-  // }
+  Future<String> getUserDocId() async {
+    User? user = AuthenticationService(_firebaseAuth).getUser();
+    QuerySnapshot querySnap =
+        await users.where('userid', isEqualTo: user!.uid).get();
+    QueryDocumentSnapshot doc = querySnap.docs[0];
+    DocumentReference docRef = doc.reference;
+    return docRef.id;
+  }
 
   // Future<void> addTask(String task) async {
   //   Future<void> newTask = FirebaseFirestore.instance
