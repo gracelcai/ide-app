@@ -49,35 +49,32 @@ class DatabaseService {
   //   return projects;
   // }
 
-  Future<DocumentReference<Object?>> getUserDoc() async {
-    User? user = AuthenticationService(_firebaseAuth).getUser();
-    QuerySnapshot querySnap =
-        await users.where('userid', isEqualTo: user!.uid).get();
-    QueryDocumentSnapshot doc = querySnap.docs[0];
-    DocumentReference docRef = doc.reference;
+  // Future<DocumentReference<Object?>> getUserDoc() async {
+  //   User? user = AuthenticationService(_firebaseAuth).getUser();
+  //   QuerySnapshot querySnap =
+  //       await users.where('userid', isEqualTo: user!.uid).get();
+  //   QueryDocumentSnapshot doc = querySnap.docs[0];
+  //   DocumentReference docRef = doc.reference;
 
-    return docRef;
-  }
+  //   return docRef;
+  // }
 
+  // String getUserDocId() {
+  //   Future<DocumentReference<Object?>> ref = getUserDoc();
+  //   print(ref.toString());
+  //   return ref.toString();
+  // }
 
-  String getUserDocId() {
-    DocumentReference ref = getUserDoc() as DocumentReference;
-    return (ref.id);
-  }
-
-  Future<void> addTask(String task) {
-    await FirebaseFirestore
-    .instance
-    .collection('orders')
-    .doc(getUserDocId())
-    .collection(
-        "user_orders")
-    .add({
-        'task': task,
-        'complete': false,
-        });
-    print("Added task");
-    return task;
-  }
-
+  // Future<void> addTask(String task) async {
+  //   Future<void> newTask = FirebaseFirestore.instance
+  //       .collection('users')
+  //       .doc(getUserDocId())
+  //       .collection("tasks")
+  //       .add({
+  //     'task': task,
+  //     'complete': false,
+  //   });
+  //   print("Added task");
+  //   return newTask;
+  // }
 }
