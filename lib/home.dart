@@ -38,8 +38,7 @@ class Home extends StatelessWidget {
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({Key? key}) : super(key: key);
-  final Stream<QuerySnapshot> _projectsStream =
-      FirebaseFirestore.instance.collection('projects').snapshots();
+
   final Stream<QuerySnapshot> _usersStream =
       FirebaseFirestore.instance.collection('users').snapshots();
   CollectionReference projects =
@@ -47,9 +46,14 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String docId = context.read<DatabaseService>().getUserDocId();
+    print(docId);
+    // final _projectsStream =
+    //     FirebaseFirestore.instance.collection('users').doc(docId).snapshots();
+    DocumentReference userDoc =
+        FirebaseFirestore.instance.collection("users").doc(docId);
     List<DocumentReference> projectRefs = [];
-    DocumentReference userDoc = context.read<DatabaseService>().getUserDoc()
-        as DocumentReference<Object?>;
+
     userDoc.get().then((value) => () {
           List.from(value['projects']).forEach((element) {
             //then add the data to the List<Offset>, now we have a type Offset
@@ -57,48 +61,51 @@ class MyHomePage extends StatelessWidget {
           });
         });
     return Scaffold(
+      //need to use projects list from user doc!!
       appBar: AppBar(title: const Text("Projects Home")),
-      // body: Center(
-      //     child: ListView.builder(
-      //   // Let the ListView know how many items it needs to build.
-      //   itemCount: projectRefs.length,
-      //   // Provide a builder function. This is where the magic happens.
-      //   // Convert each item into a widget based on the type of item it is.
-      //   itemBuilder: (context, index) {
-      //     final ref = projectRefs[index];
-      //     DocumentSnapshot<Object?> project =
-      //         await projects.doc(ref.id).get();
-      //     var data = project.data() as Map<String, dynamic>;
-      //     print(data);
-      //     return ListTile(
-      //       title: Text(data["title"]),
-      //       subtitle: Text(data["description"]),
-      //     );
-      //   },
-      // )),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: _usersStream,
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasError) {
-            return Text('Something went wrong');
-          }
+      body: Center(
+          child: ListView.builder(
+        // Let the ListView know how many items it needs to build.
+        itemCount: projectRefs.length,
+        // Provide a builder function. This is where the magic happens.
+        // Convert each item into a widget based on the type of item it is.
+        itemBuilder: (context, index) {
+          final ref = projectRefs[index];
+          DocumentSnapshot project =
+              projects.doc(ref.id).get() as DocumentSnapshot;
 
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Text("Loading");
-          }
-
-          return ListView(
-            children: snapshot.data!.docs.map((DocumentSnapshot document) {
-              Map<String, dynamic> data =
-                  document.data()! as Map<String, dynamic>;
-              return ListTile(
-                title: Text(data['full_name']),
-                subtitle: Text(data['company']),
-              );
-            }).toList(),
+          Map<String, dynamic> data = project.data() as Map<String, dynamic>;
+          print(data);
+          return ListTile(
+            title: Text(data["title"]),
+            subtitle: Text(data["description"]),
           );
         },
-      ),
+      )),
+      // body: StreamBuilder(
+      //   stream: _projectsStream,
+      //   builder: (BuildContext context, AsyncSnapshot snapshot) {
+      //     if (snapshot.hasError) {
+      //       return Text('Something went wrong');
+      //     }
+
+      //     if (snapshot.connectionState == ConnectionState.waiting) {
+      //       return Text("Loading");
+      //     }
+
+      //     return ListView(
+      //       children: snapshot.data!.docs.map((DocumentSnapshot document) {
+      //         Map<String, dynamic> data =
+      //             document.data()! as Map<String, dynamic>;
+      //         final projects = data["projects"];
+      //         return ListTile(
+      //           title: Text(data['title']),
+      //           subtitle: Text(data['description']),
+      //         );
+      //       }).toList(),
+      //     );
+      //   },
+      // ),
       drawer: SideMenu(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
