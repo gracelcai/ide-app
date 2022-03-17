@@ -9,6 +9,7 @@ import 'package:ide_app/projects.dart';
 // import 'package:ide_app/myTaskPage.dart';
 import 'package:ide_app/widgets/drawer.dart';
 import 'package:provider/provider.dart';
+import 'dart:convert';
 
 List<Project> myProjects = [];
 
@@ -20,66 +21,95 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  CollectionReference projects =
-      FirebaseFirestore.instance.collection('projects');
-  var projectRefs = [];
+  late Future<List> projectRefs;
+  refresh() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    Future<String> docId = context.read<DatabaseService>().getUserDocId();
-    docId.then((value) {
-      DocumentReference userDoc =
-          FirebaseFirestore.instance.collection("users").doc(value);
+    Future<List> projectRefs = getProjects();
+    return FutureBuilder<List>(
+      future: projectRefs,
+      builder: (context, snapshot) {
+        if (snapshot.hasError)
+          return Center(child: Text(snapshot.error.toString()));
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return _buildWait();
+        }
 
-      userDoc.get().then((value) {
-        final data = value.data() as Map<String, dynamic>;
-        // print(data["projects"]);
+        var app = Theme(
+          data: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
+          child: _buildPage(snapshot.data!),
+        );
+        return app;
+      },
+    );
+  }
 
-        projectRefs = data["projects"];
-        // print(projectRefs.length);
-      });
-    });
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Scaffold(
-        //need to use projects list from user doc!!
-        appBar: AppBar(title: const Text("Projects Home")),
-        body: Center(
-            child: ListView.builder(
-          // Let the ListView know how many items it needs to build.
-          itemCount: projectRefs.length,
-          // Provide a builder function. This is where the magic happens.
-          // Convert each item into a widget based on the type of item it is.
-          itemBuilder: (context, index) {
-            final ref = projectRefs[index];
-            DocumentSnapshot project =
-                projects.doc(ref.id).get() as DocumentSnapshot;
+  Widget _buildPage(List projectRefs) {
+    return Scaffold(
+      //need to use projects list from user doc!!
+      appBar: AppBar(title: const Text("Projects Home")),
+      body: Center(
+          child: ListView.builder(
+        // Let the ListView know how many items it needs to build.
+        itemCount: projectRefs.length,
+        // Provide a builder function. This is where the magic happens.
+        // Convert each item into a widget based on the type of item it is.
+        itemBuilder: (context, index) {
+          Map<String, dynamic> data = projectRefs[index];
 
-            Map<String, dynamic> data = project.data() as Map<String, dynamic>;
-            // print(data.length);
-            return ListTile(
-              title: Text(data["title"]),
-              subtitle: Text(data["description"]),
-            );
-          },
-        )),
+          // print(data.length);
+          return ListTile(
+            title: Text(data["title"]),
+            subtitle: Text(data["description"]),
+          );
+        },
+      )),
 
-        drawer: SideMenu(),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const NewProject()),
-            );
-          },
-          child: Icon(Icons.add),
-        ),
+      drawer: SideMenu(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const NewProject()),
+          );
+        },
+        child: Icon(Icons.add),
       ),
     );
-
-    // final _projectsStream =
-    //     FirebaseFirestore.instance.collection('users').doc(docId).snapshots();
   }
+}
+
+Widget _buildWait() {
+  return Scaffold(
+    appBar: AppBar(title: Text('Wait...')),
+    body: Center(child: CircularProgressIndicator()),
+  );
+}
+
+Future<List> getProjects() async {
+  final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+  CollectionReference projects = _firebaseFirestore.collection('projects');
+  final databaseService = DatabaseService(_firebaseFirestore);
+  String docId = await databaseService.getUserDocId(); // ERROr
+  DocumentReference userDoc =
+      FirebaseFirestore.instance.collection("users").doc(docId);
+  DocumentSnapshot snapshot = await userDoc.get();
+  final data = snapshot.data() as Map<String, dynamic>;
+  // print(data["projects"]);
+
+  List projectRefs = data["projects"];
+  List<Map<String, dynamic>> projectData = [];
+  for (DocumentReference ref in projectRefs) {
+    DocumentSnapshot project = await projects.doc(ref.id).get();
+    final data = project.data() as Map<String, dynamic>;
+
+    projectData.add(data);
+  }
+  print(projectData);
+  return projectData;
 }
