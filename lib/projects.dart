@@ -11,6 +11,7 @@ class Project extends StatelessWidget {
     // TODO: implement build
     return ProjectTabs(
       id: '',
+      data: Map<String, dynamic>(),
     );
   }
 }

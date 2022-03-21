@@ -70,11 +70,13 @@ class _HomeState extends State<Home> {
             subtitle: Text(data["description"]),
             onTap: () async {
               String id = await getId(index);
+              // print(id);
               Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => ProjectTabs(
                           id: id,
+                          data: data,
                         )), // pass in id or data - data easier, but should get id
               );
             },

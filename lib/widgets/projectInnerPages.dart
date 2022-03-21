@@ -1,13 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:ide_app/project_home.dart';
 
 // void main() {
 //   runApp(ProjectTabs());
 // }
 
 class ProjectTabs extends StatefulWidget {
-  late final String id;
-  ProjectTabs({Key? key, required String id}) : super(key: key);
+  final String id;
+  final Map<String, dynamic> data;
+  ProjectTabs({Key? key, required this.id, required this.data})
+      : super(key: key);
 
   final DocumentReference projectDoc =
       FirebaseFirestore.instance.collection("projects").doc();
@@ -43,12 +46,12 @@ class _ProjectTabsState extends State<ProjectTabs> {
                 ),
               ],
             ),
-            title: const Text('Project Title'),
+            title: Text(widget.data["title"]),
           ),
-          body: const TabBarView(
+          body: TabBarView(
             children: [
-              Text(
-                  'will contain your description and goals'), //replace with pagewidgets
+              ProjectHome(
+                  id: widget.id, data: widget.data), //replace with pagewidgets
               Text(
                   'will display your shared files and links'), //put in separate files?
               Text('will display the project schedule'),
@@ -59,19 +62,5 @@ class _ProjectTabsState extends State<ProjectTabs> {
         ),
       ),
     );
-  }
-}
-
-class ProjectHome extends StatefulWidget {
-  const ProjectHome({Key? key, required String id}) : super(key: key);
-
-  @override
-  State<ProjectHome> createState() => _ProjectHomeState();
-}
-
-class _ProjectHomeState extends State<ProjectHome> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
   }
 }
