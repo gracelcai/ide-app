@@ -7,75 +7,75 @@ import 'package:ide_app/database_service.dart';
 import 'package:provider/provider.dart';
 import 'authentication_service.dart';
 
-class NewProject extends StatelessWidget {
-  const NewProject({Key? key}) : super(key: key);
-
+class NewProject extends StatefulWidget {
+  late final Function() notifyParent;
+  NewProject({Key? key, required Function() notifyParent}) : super(key: key);
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("New Project")),
-      body: ProjectInfo(),
-    );
-  }
+  State<NewProject> createState() => _NewProjectState();
 }
 
-class ProjectInfo extends StatelessWidget {
-  ProjectInfo({Key? key}) : super(key: key);
+@override
+class _NewProjectState extends State<NewProject> {
+  // TODO: implement createState
   TextEditingController titleTextController = TextEditingController();
   TextEditingController descriptionTextController = TextEditingController();
   TextEditingController goalsTextController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-          child: TextFormField(
-            decoration: const InputDecoration(
-              border: UnderlineInputBorder(),
-              labelText: 'Project Title',
+    return Scaffold(
+        appBar: AppBar(title: Text("New Project")),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              child: TextFormField(
+                decoration: const InputDecoration(
+                  border: UnderlineInputBorder(),
+                  labelText: 'Project Title',
+                ),
+                controller: titleTextController,
+              ),
             ),
-            controller: titleTextController,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-          child: TextFormField(
-            decoration: const InputDecoration(
-              border: UnderlineInputBorder(),
-              labelText: 'Project Description',
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              child: TextFormField(
+                decoration: const InputDecoration(
+                  border: UnderlineInputBorder(),
+                  labelText: 'Project Description',
+                ),
+                controller: descriptionTextController,
+              ),
             ),
-            controller: descriptionTextController,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-          child: TextFormField(
-            decoration: const InputDecoration(
-              border: UnderlineInputBorder(),
-              labelText: 'Project Goals',
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              child: TextFormField(
+                decoration: const InputDecoration(
+                  border: UnderlineInputBorder(),
+                  labelText: 'Project Goals',
+                ),
+                controller: goalsTextController,
+              ),
             ),
-            controller: goalsTextController,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-          child: ElevatedButton(
-            onPressed: () {
-              final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-              context.read<DatabaseService>().createProject(
-                  titleTextController.text,
-                  descriptionTextController.text,
-                  goalsTextController.text,
-                  AuthenticationService(_firebaseAuth).getUser()!);
-              //also needs to somehow make a project that shows up in home page
-              Navigator.pop(context);
-            },
-            child: const Text('Create Project'),
-          ),
-        )
-      ],
-    );
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              child: ElevatedButton(
+                onPressed: () {
+                  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+                  context.read<DatabaseService>().createProject(
+                      titleTextController.text,
+                      descriptionTextController.text,
+                      goalsTextController.text,
+                      AuthenticationService(_firebaseAuth).getUser()!);
+                  //also needs to somehow make a project that shows up in home page
+                  Navigator.pop(context);
+
+                  widget.notifyParent();
+                },
+                child: const Text('Create Project'),
+              ),
+            )
+          ],
+        ));
   }
 }

@@ -9,6 +9,8 @@ class Project extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return ProjectTabs();
+    return ProjectTabs(
+      id: '',
+    );
   }
 }

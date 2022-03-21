@@ -1,17 +1,27 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const ProjectTabs());
+// void main() {
+//   runApp(ProjectTabs());
+// }
+
+class ProjectTabs extends StatefulWidget {
+  late final String id;
+  ProjectTabs({Key? key, required String id}) : super(key: key);
+
+  final DocumentReference projectDoc =
+      FirebaseFirestore.instance.collection("projects").doc();
+
+  @override
+  State<ProjectTabs> createState() => _ProjectTabsState();
 }
 
-class ProjectTabs extends StatelessWidget {
-  const ProjectTabs({Key? key}) : super(key: key);
-
+class _ProjectTabsState extends State<ProjectTabs> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: DefaultTabController(
-        length: 3,
+        length: 5,
         child: Scaffold(
           appBar: AppBar(
             bottom: const TabBar(
@@ -39,7 +49,8 @@ class ProjectTabs extends StatelessWidget {
             children: [
               Text(
                   'will contain your description and goals'), //replace with pagewidgets
-              Text('will display your shared files and links'),
+              Text(
+                  'will display your shared files and links'), //put in separate files?
               Text('will display the project schedule'),
               Text('will allow you to communicate with your group'),
               Text('will show your groupmembers'),
@@ -48,5 +59,19 @@ class ProjectTabs extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class ProjectHome extends StatefulWidget {
+  const ProjectHome({Key? key, required String id}) : super(key: key);
+
+  @override
+  State<ProjectHome> createState() => _ProjectHomeState();
+}
+
+class _ProjectHomeState extends State<ProjectHome> {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }

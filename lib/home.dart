@@ -8,6 +8,7 @@ import 'package:ide_app/projects.dart';
 // import 'package:ide_app/calendar_page.dart';
 // import 'package:ide_app/myTaskPage.dart';
 import 'package:ide_app/widgets/drawer.dart';
+import 'package:ide_app/widgets/projectInnerPages.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 
@@ -23,6 +24,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   late Future<List> projectRefs;
   refresh() {
+    print("refresh");
     setState(() {});
   }
 
@@ -66,6 +68,16 @@ class _HomeState extends State<Home> {
           return ListTile(
             title: Text(data["title"]),
             subtitle: Text(data["description"]),
+            onTap: () async {
+              String id = await getId(index);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ProjectTabs(
+                          id: id,
+                        )), // pass in id or data - data easier, but should get id
+              );
+            },
           );
         },
       )),
@@ -75,7 +87,10 @@ class _HomeState extends State<Home> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const NewProject()),
+            MaterialPageRoute(
+                builder: (context) => NewProject(
+                      notifyParent: refresh, //not working
+                    )),
           );
         },
         child: Icon(Icons.add),
@@ -86,7 +101,7 @@ class _HomeState extends State<Home> {
 
 Widget _buildWait() {
   return Scaffold(
-    appBar: AppBar(title: Text('Wait...')),
+    appBar: AppBar(title: Text('Loading...')),
     body: Center(child: CircularProgressIndicator()),
   );
 }
@@ -95,7 +110,7 @@ Future<List> getProjects() async {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
   CollectionReference projects = _firebaseFirestore.collection('projects');
   final databaseService = DatabaseService(_firebaseFirestore);
-  String docId = await databaseService.getUserDocId(); // ERROr
+  String docId = await databaseService.getUserDocId();
   DocumentReference userDoc =
       FirebaseFirestore.instance.collection("users").doc(docId);
   DocumentSnapshot snapshot = await userDoc.get();
@@ -110,6 +125,23 @@ Future<List> getProjects() async {
 
     projectData.add(data);
   }
-  print(projectData);
+  // print(projectData);
   return projectData;
+}
+
+Future<String> getId(int index) async {
+  final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+  CollectionReference projects = _firebaseFirestore.collection('projects');
+  final databaseService = DatabaseService(_firebaseFirestore);
+  String docId = await databaseService.getUserDocId(); // ERROr
+  DocumentReference userDoc =
+      FirebaseFirestore.instance.collection("users").doc(docId);
+  DocumentSnapshot snapshot = await userDoc.get();
+  final data = snapshot.data() as Map<String, dynamic>;
+  // print(data["projects"]);
+
+  List projectRefs = data["projects"];
+  List<Map<String, dynamic>> projectData = [];
+  DocumentReference ref = projectRefs[index];
+  return ref.id;
 }
