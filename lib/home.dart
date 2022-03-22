@@ -24,8 +24,10 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   late Future<List> projectRefs;
   refresh() {
-    print("refresh");
-    setState(() {});
+    setState(() {
+      print("refresh");
+      build(context);
+    });
   }
 
   @override

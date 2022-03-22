@@ -8,8 +8,8 @@ import 'package:provider/provider.dart';
 import 'authentication_service.dart';
 
 class NewProject extends StatefulWidget {
-  late final Function() notifyParent;
-  NewProject({Key? key, required Function() notifyParent}) : super(key: key);
+  final Function() notifyParent;
+  NewProject({Key? key, required this.notifyParent}) : super(key: key);
   @override
   State<NewProject> createState() => _NewProjectState();
 }
