@@ -58,16 +58,17 @@ class DatabaseService {
     return docRef.id;
   }
 
-  // Future<void> addTask(String task) async {
-  //   Future<void> newTask = FirebaseFirestore.instance
-  //       .collection('users')
-  //       .doc(getUserDocId())
-  //       .collection("tasks")
-  //       .add({
-  //     'task': task,
-  //     'complete': false,
-  //   });
-  //   print("Added task");
-  //   return newTask;
-  // }
+  Future<void> addTask(String task) async {
+    print(await getUserDocId());
+    Future<void> newTask = FirebaseFirestore.instance
+        .collection('users')
+        .doc(await getUserDocId())
+        .collection('tasks')
+        .add({
+      'task': task,
+      'complete': false,
+    });
+    print("Added task");
+    return newTask;
+  }
 }

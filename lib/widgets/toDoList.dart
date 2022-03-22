@@ -1,4 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ide_app/home.dart';
+import 'package:ide_app/myTaskPage.dart';
+import 'package:ide_app/database_service.dart';
+import 'package:provider/provider.dart';
+import 'package:ide_app/authentication_service.dart';
 
 class TodoList extends StatefulWidget {
   @override
@@ -7,12 +14,49 @@ class TodoList extends StatefulWidget {
 
 class _TodoListState extends State<TodoList> {
   final List<String> _todoList = <String>[];
-  final TextEditingController _textFieldController = TextEditingController();
+  final TextEditingController newTask = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    Future<List> taskRefs = getTasks();
+    return FutureBuilder<List>(
+      future: taskRefs,
+      builder: (context, snapshot) {
+        if (snapshot.hasError)
+          return Center(child: Text(snapshot.error.toString()));
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return buildWait();
+        }
+
+        var app = Theme(
+          data: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
+          child: buildPage(snapshot.data!),
+        );
+        return app;
+      },
+    );
+  }
+
+  Widget buildPage(List taskRefs) {
     return Scaffold(
-      body: ListView(children: _getItems()),
+      body: Center(
+          child: ListView.builder(
+        // Let the ListView know how many items it needs to build.
+        itemCount: taskRefs.length,
+        // Provide a builder function. This is where the magic happens.
+        // Convert each item into a widget based on the type of item it is.
+        itemBuilder: (context, index) {
+          Map<String, dynamic> data = taskRefs[index];
+
+          // print(data.length);
+          return ListTile(
+            title: Text(data["complete"]),
+            subtitle: Text(data["task"]),
+          );
+        },
+      )),
       floatingActionButton: FloatingActionButton(
           onPressed: () => _displayDialog(context),
           tooltip: 'Add Item',
@@ -26,7 +70,6 @@ class _TodoListState extends State<TodoList> {
     setState(() {
       _todoList.add(title);
     });
-    _textFieldController.clear();
   }
 
   // Generate list of item widgets
@@ -42,21 +85,27 @@ class _TodoListState extends State<TodoList> {
           return AlertDialog(
             title: const Text('Add a task to your list'),
             content: TextField(
-              controller: _textFieldController,
+              controller: newTask,
               decoration: const InputDecoration(hintText: 'Enter task here'),
             ),
             actions: <Widget>[
               ElevatedButton(
                 child: const Text('ADD'),
                 onPressed: () {
-                  Navigator.of(context).pop();
-                  _addTodoItem(_textFieldController.text);
+                  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+                  context.read<DatabaseService>().addTask(
+                        newTask.text,
+                      );
+                  //supposed to add task to db
+                  print("added task to database");
+                  Navigator.pop(context);
+                  _addTodoItem(newTask.text);
                 },
               ),
               ElevatedButton(
                 child: const Text('CANCEL'),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.pop(context);
                 },
               )
             ],
@@ -64,11 +113,47 @@ class _TodoListState extends State<TodoList> {
         });
   }
 
-  List<Widget> _getItems() {
-    final List<Widget> _todoWidgets = <Widget>[];
-    for (String title in _todoList) {
-      _todoWidgets.add(_buildTodoItem(title));
+  // Future<List> _getItems() {
+  //   final Future<List> _todoWidgets = getTasks();
+  //   for (String title in _todoList) {
+  //     _todoWidgets.add(_buildTodoItem(title));
+  //   }
+  //   return _todoWidgets;
+  // }
+
+  Widget buildWait() {
+    return Scaffold(
+      appBar: AppBar(title: Text('Wait...')),
+      body: Center(child: CircularProgressIndicator()),
+    );
+  }
+
+  Future<List> getTasks() async {
+    final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+
+    final databaseService = DatabaseService(_firebaseFirestore);
+    String docId = await databaseService.getUserDocId(); // ERROr
+    CollectionReference tasks = FirebaseFirestore.instance
+        .collection('users')
+        .doc(docId)
+        .collection('tasks');
+    DocumentReference userDoc =
+        FirebaseFirestore.instance.collection("users").doc(docId);
+    DocumentSnapshot snapshot = await userDoc.get();
+    final data = snapshot.data() as Map<String, dynamic>;
+    // print(data["projects"]);
+
+    List taskList = data["tasks"];
+    List<Map<String, dynamic>> taskData = [];
+    for (DocumentReference ref in taskList) {
+      DocumentSnapshot task = await tasks.doc(ref.id).get();
+      final data = task.data() as Map<String, dynamic>;
+
+      taskData.add(data);
     }
-    return _todoWidgets;
+    if (taskData == null) {
+      print("task data is null, list did not initialize properly");
+    }
+    return taskData;
   }
 }

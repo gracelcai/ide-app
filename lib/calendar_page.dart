@@ -4,22 +4,26 @@ import 'package:ide_app/myTaskPage.dart';
 import 'package:ide_app/widgets/drawer.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-class CalendarPage extends StatelessWidget {
+class CalendarPage extends StatefulWidget {
   const CalendarPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Projects Calendar")),
-      body: SfCalendar(
-        view: CalendarView.month,
-        dataSource: MeetingDataSource(_getDataSource()),
-        showNavigationArrow: true,
-        monthViewSettings: MonthViewSettings(
-            appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
-      ),
-      drawer: SideMenu(),
-    );
+  State<CalendarPage> createState() => _CalendarState();
+
+  _CalendarState() {
+    Widget build(BuildContext context) {
+      return Scaffold(
+        appBar: AppBar(title: const Text("Projects Calendar")),
+        body: SfCalendar(
+          view: CalendarView.month,
+          dataSource: MeetingDataSource(_getDataSource()),
+          showNavigationArrow: true,
+          monthViewSettings: MonthViewSettings(
+              appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
+        ),
+        drawer: SideMenu(),
+      );
+    }
   }
 }
 
