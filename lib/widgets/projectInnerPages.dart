@@ -3,6 +3,7 @@ import 'dart:js';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ide_app/project_home.dart';
+import 'package:ide_app/project_people.dart';
 
 import 'drawer.dart';
 
@@ -80,7 +81,7 @@ Widget _buildPage(String id, Map<String, dynamic> data) {
                 'will display your shared files and links'), //put in separate files?
             Text('will display the project schedule'),
             Text('will allow you to communicate with your group'),
-            Text('will show your groupmembers'),
+            ProjectPeople(id: id),
           ],
         ),
       ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ide_app/authentication_service.dart';
+import 'package:ide_app/services/authentication_service.dart';
 import 'package:ide_app/new_project.dart';
 import 'package:provider/provider.dart';
 import 'package:ide_app/calendar_page.dart';

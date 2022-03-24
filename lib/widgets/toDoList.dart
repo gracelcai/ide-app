@@ -3,9 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ide_app/home.dart';
 import 'package:ide_app/myTaskPage.dart';
-import 'package:ide_app/database_service.dart';
+import 'package:ide_app/services/database_service.dart';
 import 'package:provider/provider.dart';
-import 'package:ide_app/authentication_service.dart';
+import 'package:ide_app/services/authentication_service.dart';
 
 class TodoList extends StatefulWidget {
   @override
