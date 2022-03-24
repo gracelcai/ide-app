@@ -78,9 +78,11 @@ class _HomeState extends State<Home> {
                 MaterialPageRoute(
                     builder: (context) => ProjectTabs(
                           id: id,
-                          data: data,
                         )), // pass in id or data - data easier, but should get id
               );
+            },
+            onLongPress: () {
+              // delete?
             },
           );
         },

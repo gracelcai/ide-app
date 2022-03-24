@@ -27,7 +27,8 @@ class DatabaseService {
           'title': title,
           'description': description,
           'goals': goals, // add members
-          'owner': userRef
+          'owner': userRef,
+          'members': List<DocumentReference>,
         })
         .then((value) => (userRef.update({
               'projects': FieldValue.arrayUnion([value])
