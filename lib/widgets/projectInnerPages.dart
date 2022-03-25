@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ide_app/project_home.dart';
+import 'package:ide_app/widgets/drawer.dart';
 
 // void main() {
 //   runApp(ProjectTabs());
@@ -59,6 +60,7 @@ class _ProjectTabsState extends State<ProjectTabs> {
               Text('will show your groupmembers'),
             ],
           ),
+          drawer: SideMenu(),
         ),
       ),
     );

@@ -9,9 +9,11 @@ class Project extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return ProjectTabs(
-      id: '',
-      data: Map<String, dynamic>(),
+    return Scaffold(
+      body: ProjectTabs(
+        id: '',
+        data: Map<String, dynamic>(),
+      ),
     );
   }
 }
