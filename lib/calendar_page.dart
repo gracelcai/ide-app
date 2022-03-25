@@ -9,21 +9,21 @@ class CalendarPage extends StatefulWidget {
 
   @override
   State<CalendarPage> createState() => _CalendarState();
+}
 
-  _CalendarState() {
-    Widget build(BuildContext context) {
-      return Scaffold(
-        appBar: AppBar(title: const Text("Projects Calendar")),
-        body: SfCalendar(
-          view: CalendarView.month,
-          dataSource: MeetingDataSource(_getDataSource()),
-          showNavigationArrow: true,
-          monthViewSettings: MonthViewSettings(
-              appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
-        ),
-        drawer: SideMenu(),
-      );
-    }
+class _CalendarState extends State<CalendarPage> {
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Projects Calendar")),
+      body: SfCalendar(
+        view: CalendarView.month,
+        dataSource: MeetingDataSource(_getDataSource()),
+        showNavigationArrow: true,
+        monthViewSettings: MonthViewSettings(
+            appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
+      ),
+      drawer: SideMenu(),
+    );
   }
 }
 

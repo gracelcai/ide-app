@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:ide_app/database_service.dart';
+import 'package:ide_app/services/database_service.dart';
 // import 'package:ide_app/authentication_service.dart';
 import 'package:ide_app/new_project.dart';
 import 'package:ide_app/projects.dart';
@@ -78,9 +78,11 @@ class _HomeState extends State<Home> {
                 MaterialPageRoute(
                     builder: (context) => ProjectTabs(
                           id: id,
-                          data: data,
                         )), // pass in id or data - data easier, but should get id
               );
+            },
+            onLongPress: () {
+              // delete?
             },
           );
         },

@@ -3,9 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ide_app/home.dart';
 import 'package:ide_app/myTaskPage.dart';
-import 'package:ide_app/database_service.dart';
+import 'package:ide_app/services/database_service.dart';
 import 'package:provider/provider.dart';
-import 'authentication_service.dart';
+import 'services/authentication_service.dart';
 
 class NewProject extends StatefulWidget {
   final Function() notifyParent;

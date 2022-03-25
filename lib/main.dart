@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:ide_app/database_service.dart';
+import 'package:ide_app/services/database_service.dart';
 import 'package:ide_app/sign_up.dart';
 import 'package:ide_app/splash.dart';
-import 'authentication_service.dart';
+import 'services/authentication_service.dart';
 // screens
 import 'home.dart';
 import 'sign_in.dart';
