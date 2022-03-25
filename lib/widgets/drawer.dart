@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ide_app/services/authentication_service.dart';
 import 'package:ide_app/new_project.dart';
+import 'package:ide_app/sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:ide_app/calendar_page.dart';
 import 'package:ide_app/myTaskPage.dart';
@@ -47,6 +49,16 @@ class SideMenu extends StatelessWidget {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const CalendarPage()),
+              );
+            },
+          ),
+          ListTile(
+            title: const Text('Log Out'),
+            onTap: () async {
+              await FirebaseAuth.instance.signOut();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => SignIn()),
               );
             },
           ),
