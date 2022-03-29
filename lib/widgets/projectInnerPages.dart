@@ -3,9 +3,8 @@ import 'dart:js';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ide_app/project_home.dart';
+import 'package:ide_app/widgets/drawer.dart';
 import 'package:ide_app/project_people.dart';
-
-import 'drawer.dart';
 
 // void main() {
 //   runApp(ProjectTabs());
@@ -84,6 +83,7 @@ Widget _buildPage(String id, Map<String, dynamic> data) {
             ProjectPeople(id: id),
           ],
         ),
+        drawer: SideMenu(),
       ),
     ),
   );

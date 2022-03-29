@@ -18,45 +18,40 @@ class _TodoListState extends State<TodoList> {
 
   @override
   Widget build(BuildContext context) {
-    Future<List> taskRefs = getTasks();
-    return FutureBuilder<List>(
-      future: taskRefs,
-      builder: (context, snapshot) {
-        if (snapshot.hasError)
-          return Center(child: Text(snapshot.error.toString()));
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return buildWait();
-        }
-
-        var app = Theme(
-          data: ThemeData(
-            primarySwatch: Colors.blue,
-          ),
-          child: buildPage(snapshot.data!),
-        );
-        return app;
-      },
-    );
+    Future<Widget> tasks = getTasks();
+    return FutureBuilder(
+        future: tasks,
+        builder: ((context, snapshot) {
+          if (snapshot.hasError)
+            return Center(child: Text(snapshot.error.toString()));
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Scaffold(
+              appBar: AppBar(title: Text('Loading...')),
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
+          return buildPage();
+        }));
   }
 
-  Widget buildPage(List taskRefs) {
+  Widget buildPage() {
     return Scaffold(
-      body: Center(
-          child: ListView.builder(
-        // Let the ListView know how many items it needs to build.
-        itemCount: taskRefs.length,
-        // Provide a builder function. This is where the magic happens.
-        // Convert each item into a widget based on the type of item it is.
-        itemBuilder: (context, index) {
-          Map<String, dynamic> data = taskRefs[index];
+      // body: Center(
+      //   //   child: ListView.builder(
+      //   // // Let the ListView know how many items it needs to build.
+      //   // itemCount: taskRefs.length,
+      //   // // Provide a builder function. This is where the magic happens.
+      //   // // Convert each item into a widget based on the type of item it is.
+      //   // itemBuilder: (context, index) {
+      //   //   Map<String, dynamic> data = taskRefs[index];
 
-          // print(data.length);
-          return ListTile(
-            title: Text(data["complete"]),
-            subtitle: Text(data["task"]),
-          );
-        },
-      )),
+      //   //   // print(data.length);
+      //   //   return ListTile(
+      //   //     title: Text(data["complete"]),
+      //   //     subtitle: Text(data["task"]),
+      //   //   );
+      //   // },
+      // )),
       floatingActionButton: FloatingActionButton(
           onPressed: () => _displayDialog(context),
           tooltip: 'Add Item',
@@ -67,6 +62,12 @@ class _TodoListState extends State<TodoList> {
   void _addTodoItem(String title) {
     // Wrapping it inside a set state will notify
     // the app that the state has changed
+    final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+    context.read<DatabaseService>().addTask(
+          newTask.text,
+        );
+    //supposed to add task to db
+    print("added task to database");
     setState(() {
       _todoList.add(title);
     });
@@ -92,12 +93,6 @@ class _TodoListState extends State<TodoList> {
               ElevatedButton(
                 child: const Text('ADD'),
                 onPressed: () {
-                  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-                  context.read<DatabaseService>().addTask(
-                        newTask.text,
-                      );
-                  //supposed to add task to db
-                  print("added task to database");
                   Navigator.pop(context);
                   _addTodoItem(newTask.text);
                 },
@@ -128,7 +123,7 @@ class _TodoListState extends State<TodoList> {
     );
   }
 
-  Future<List> getTasks() async {
+  Future<Widget> getTasks() async {
     final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
     final databaseService = DatabaseService(_firebaseFirestore);
@@ -137,23 +132,85 @@ class _TodoListState extends State<TodoList> {
         .collection('users')
         .doc(docId)
         .collection('tasks');
-    DocumentReference userDoc =
-        FirebaseFirestore.instance.collection("users").doc(docId);
-    DocumentSnapshot snapshot = await userDoc.get();
-    final data = snapshot.data() as Map<String, dynamic>;
-    // print(data["projects"]);
+    return Scaffold(
+        // ignore: unnecessary_new
+        body: new StreamBuilder(
+      stream: tasks.snapshots(),
+      builder: (_, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (!snapshot.hasData) {
+          return Center(
+            child: Text('Data not available'),
+          );
+        }
+        final task = snapshot.data?.docs;
+        List<String> textWidgets = [];
+        task?.forEach((element) {
+          final taskdescription = element['task'];
+          final complete = element['complete'];
+          //final textWidget = Text(taskdescription);
+          textWidgets.add(taskdescription);
+        });
+        return ListView.builder(
+          // Let the ListView know how many items it needs to build.
+          itemCount: textWidgets.length,
+          // Provide a builder function. This is where the magic happens.
+          // Convert each item into a widget based on the type of item it is.
+          itemBuilder: (context, index) {
+            return ListTile(
+              title: Text(textWidgets[index]),
+            );
+          },
+        );
+      },
+    )
 
-    List taskList = data["tasks"];
-    List<Map<String, dynamic>> taskData = [];
-    for (DocumentReference ref in taskList) {
-      DocumentSnapshot task = await tasks.doc(ref.id).get();
-      final data = task.data() as Map<String, dynamic>;
+        /*new Lost_Card(
+        headImageAssetPath: "https://i.imgur.com/FtaGNck.jpg" ,
+        title: "Mega Dish",
+        noro: "old",
 
-      taskData.add(data);
-    }
-    if (taskData == null) {
-      print("task data is null, list did not initialize properly");
-    }
-    return taskData;
+
+      // )*/
+        // ,
+        // floatingActionButton:
+        //     new FloatingActionButton(child: new Icon(Icons.add), onPressed: _add),
+        );
+    // print("trying to get tasks");
+    // final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+
+    // final databaseService = DatabaseService(_firebaseFirestore);
+    // String docId = await databaseService.getUserDocId(); // ERROr
+    // CollectionReference tasks = FirebaseFirestore.instance
+    //     .collection('users')
+    //     .doc(docId)
+    //     .collection('tasks');
+    // new StreamBuilder(
+    //   stream: tasks.snapshots(),
+    //   builder: (context, snapshot));
+    // DocumentReference userDoc =
+    //     FirebaseFirestore.instance.collection("users").doc(docId);
+    // DocumentSnapshot snapshot = await userDoc.get();
+    // final data = snapshot.data() as Map<String, dynamic>;
+
+    // // print(data["projects"]);
+
+    // List taskList = data["tasks"];
+    // if (taskList == null) {
+    //   print("taskList IS NULL");
+    // }
+    // List<Map<String, dynamic>> taskData = data["tasks"];
+    // if (taskData == null) {
+    //   print("TaskData IS NULL");
+    // }
+    // for (DocumentReference ref in taskList) {
+    //   DocumentSnapshot task = await tasks.doc(ref.id).get();
+    //   final data = task.data() as Map<String, dynamic>;
+
+    //   taskData.add(data);
+    // }
+    // if (taskData == null) {
+    //   print("task data is null, list did not initialize properly");
+    // }
+    //return taskData;
   }
 }
