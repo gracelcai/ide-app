@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ide_app/services/authentication_service.dart';
 import 'package:provider/provider.dart';
@@ -105,6 +102,7 @@ class _SignUpState extends State<SignUp> {
                       if (result == "Signed up") {
                         Navigator.popUntil(
                             context, ModalRoute.withName('/auth'));
+
                         // FirebaseFirestore firestore =
                         //     FirebaseFirestore.instance;
                         // CollectionReference users =

@@ -27,10 +27,8 @@ class DatabaseService {
           'title': title,
           'description': description,
           'goals': goals, // add members
-          'owner': userRef,
-          'roles': {
-            userRef.id: 'owner',
-          },
+          'owner': userRef, //members list
+          'members': [userRef], // takes user doc refs
         })
         .then((value) => (userRef.update({
               'projects': FieldValue.arrayUnion([value])
@@ -50,9 +48,7 @@ class DatabaseService {
     DocumentReference newMember =
         FirebaseFirestore.instance.collection("users").doc(userDoc);
     project.update({
-      'roles': FieldValue.arrayUnion([
-        {userDoc: "editor"}
-      ])
+      'members': FieldValue.arrayUnion([newMember])
     });
 
     newMember.update({
