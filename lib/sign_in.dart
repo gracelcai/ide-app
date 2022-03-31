@@ -99,10 +99,7 @@ class _SignInState extends State<SignIn> {
                   height: 24,
                 ),
                 InkWell(
-                  onTap: () => Navigator.pushNamed(
-                    context,
-                    '/signup',
-                  ),
+                  onTap: () => Navigator.pushNamed(context, '/signup'),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

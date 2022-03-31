@@ -46,14 +46,14 @@ class _HomeState extends State<Home> {
           data: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          child: _buildPage(snapshot.data!),
+          child: _buildPage(snapshot.data!, true),
         );
         return app;
       },
     );
   }
 
-  Widget _buildPage(List projectRefs) {
+  Widget _buildPage(List projectRefs, bool listView) {
     return Scaffold(
       //need to use projects list from user doc!!
       appBar: AppBar(title: const Text("Projects Home")),
@@ -67,24 +67,46 @@ class _HomeState extends State<Home> {
           Map<String, dynamic> data = projectRefs[index];
 
           // print(data.length);
-          return ListTile(
-            title: Text(data["title"]),
-            subtitle: Text(data["description"]),
-            onTap: () async {
-              String id = await getId(index);
-              // print(id);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ProjectTabs(
-                          id: id,
-                        )), // pass in id or data - data easier, but should get id
-              );
-            },
-            onLongPress: () {
-              // delete?
-            },
-          );
+          if (listView) {
+            return ListTile(
+              title: Text(data["title"]),
+              subtitle: Text(data["description"]),
+              onTap: () async {
+                String id = await getId(index);
+                // print(id);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ProjectTabs(
+                            id: id,
+                          )), // pass in id or data - data easier, but should get id
+                );
+              },
+              onLongPress: () {
+                // delete?
+              },
+            );
+          } else {
+            return Card(
+              color: Colors.white,
+              shadowColor: Colors.white70,
+              elevation: 10.0,
+              child: Column(
+                children: [Text(data["title"]), Text(data["description"])],
+              ),
+              // onTap: () async {
+              //   String id = await getId(index);
+              //   // print(id);
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //         builder: (context) => ProjectTabs(
+              //               id: id,
+              //             )), // pass in id or data - data easier, but should get id
+              //   );
+              // },
+            );
+          }
         },
       )),
 
@@ -116,7 +138,7 @@ Future<List> getProjects() async {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
   CollectionReference projects = _firebaseFirestore.collection('projects');
   final databaseService = DatabaseService(_firebaseFirestore);
-  String docId = await databaseService.getUserDocId();
+  String docId = await databaseService.getUserId();
   DocumentReference userDoc =
       FirebaseFirestore.instance.collection("users").doc(docId);
   DocumentSnapshot snapshot = await userDoc.get();
@@ -139,7 +161,7 @@ Future<String> getId(int index) async {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
   CollectionReference projects = _firebaseFirestore.collection('projects');
   final databaseService = DatabaseService(_firebaseFirestore);
-  String docId = await databaseService.getUserDocId(); // ERROr
+  String docId = await databaseService.getUserId(); // ERROr
   DocumentReference userDoc =
       FirebaseFirestore.instance.collection("users").doc(docId);
   DocumentSnapshot snapshot = await userDoc.get();

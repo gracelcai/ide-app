@@ -40,13 +40,30 @@ class DatabaseService {
     return project;
   }
 
+  Future<void> updateProject(
+      String id, String title, String description, String goals) async {
+    // Call the user's CollectionReference to add a new user
+    // array of references user's projects in user document
+    // projects in separate collection with array of references to members
+
+    Future<void> project = projects.doc(id).update({
+      'title': title,
+      'description': description,
+      'goals': goals, // add members
+    }).catchError((error) => () {});
+
+    print("Updated project");
+
+    return project;
+  }
+
   Future<void> addProjectMembers(String projectId, String email) async {
-    String userDoc = await getUserFromEmail(email);
-    String userId = await getUserIdFromDoc(userDoc);
+    String userId = await getUserFromEmail(email);
+
     DocumentReference project =
         FirebaseFirestore.instance.collection("projects").doc(projectId);
     DocumentReference newMember =
-        FirebaseFirestore.instance.collection("users").doc(userDoc);
+        FirebaseFirestore.instance.collection("users").doc(userId);
     project.update({
       'members': FieldValue.arrayUnion([newMember])
     });
@@ -75,6 +92,10 @@ class DatabaseService {
     QueryDocumentSnapshot doc = querySnap.docs[0];
     DocumentReference docRef = doc.reference;
     return docRef.id;
+  }
+
+  Future<String> getUserId() async {
+    return AuthenticationService(_firebaseAuth).getUser()!.uid;
   }
 
   ///Gets user document id from user id

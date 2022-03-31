@@ -36,13 +36,14 @@ class AuthenticationService {
       userCred.user!.updateDisplayName(name);
       List<DocumentReference> projects = [];
       userDoc = users
-          .add({
+          .doc(userCred.user!.uid)
+          .set({
             'name': name,
             'email': email,
             'userid': userCred.user!.uid,
             'projects': projects
           })
-          .then((value) => print("$value User Added"))
+          .then((value) => print("User Added"))
           .catchError((error) => print("Failed to add user: $error"));
 
       return "Signed up";

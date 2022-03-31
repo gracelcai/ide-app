@@ -70,7 +70,11 @@ class _ProjectPeopleState extends State<ProjectPeople> {
                     widget.id,
                     emailTextController.text,
                   );
-              //also needs to somehow make a project that shows up in home page
+
+              //reload to show new member
+              setState(() {
+                print("refreshed");
+              });
             },
             child: const Text('Add Member'),
           ),
