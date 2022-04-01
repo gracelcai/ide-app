@@ -27,23 +27,24 @@ class _EditProjectState extends State<EditProject> {
     return FutureBuilder<Map<String, dynamic>>(
         future: projectData,
         builder: (context, snapshot) {
-          if (snapshot.hasError)
+          if (snapshot.hasError) {
             return Center(child: Text(snapshot.error.toString()));
+          }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return _buildWait();
+            return buildWait();
           }
 
           var app = Theme(
             data: ThemeData(
               primarySwatch: Colors.blue,
             ),
-            child: _buildPage(snapshot.data!),
+            child: buildPage(snapshot.data!),
           );
           return app;
         });
   }
 
-  Widget _buildPage(Map<String, dynamic> data) {
+  Widget buildPage(Map<String, dynamic> data) {
     TextEditingController titleTextController =
         TextEditingController(text: data["title"]);
     TextEditingController descriptionTextController =
@@ -121,7 +122,7 @@ class _EditProjectState extends State<EditProject> {
     );
   }
 
-  Widget _buildWait() {
+  Widget buildWait() {
     return Scaffold(
       appBar: AppBar(title: Text('Loading...')),
       body: Center(child: CircularProgressIndicator()),

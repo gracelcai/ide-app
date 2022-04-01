@@ -26,27 +26,27 @@ class _ProjectPeopleState extends State<ProjectPeople> {
           if (snapshot.hasError)
             return Center(child: Text(snapshot.error.toString()));
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return _buildWait();
+            return buildWait();
           }
 
           var app = Theme(
             data: ThemeData(
               primarySwatch: Colors.blue,
             ),
-            child: _buildPage(snapshot.data!),
+            child: buildPage(snapshot.data!),
           );
           return app;
         });
   }
 
-  Widget _buildWait() {
+  Widget buildWait() {
     return Scaffold(
       appBar: AppBar(title: Text('Loading...')),
       body: Center(child: CircularProgressIndicator()),
     );
   }
 
-  Widget _buildPage(List members) {
+  Widget buildPage(List members) {
     return Scaffold(
         body: Column(
       crossAxisAlignment: CrossAxisAlignment.start,

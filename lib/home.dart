@@ -9,8 +9,6 @@ import 'package:ide_app/projects.dart';
 // import 'package:ide_app/myTaskPage.dart';
 import 'package:ide_app/widgets/drawer.dart';
 import 'package:ide_app/widgets/projectInnerPages.dart';
-import 'package:provider/provider.dart';
-import 'dart:convert';
 
 List<Project> myProjects = [];
 
@@ -23,10 +21,10 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   late Future<List> projectRefs;
+  bool listView = true;
   refresh() {
     setState(() {
       print("refresh");
-      build(context);
     });
   }
 
@@ -36,27 +34,54 @@ class _HomeState extends State<Home> {
     return FutureBuilder<List>(
       future: projectRefs,
       builder: (context, snapshot) {
-        if (snapshot.hasError)
+        if (snapshot.hasError) {
           return Center(child: Text(snapshot.error.toString()));
+        }
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return _buildWait();
+          return buildWait();
         }
 
         var app = Theme(
           data: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          child: _buildPage(snapshot.data!, true),
+          child: buildPage(snapshot.data!),
         );
         return app;
       },
     );
   }
 
-  Widget _buildPage(List projectRefs, bool listView) {
+  Widget buildPage(List projectRefs) {
+    List<bool> isSelected = <bool>[true, false];
     return Scaffold(
       //need to use projects list from user doc!!
-      appBar: AppBar(title: const Text("Projects Home")),
+      appBar: AppBar(
+        title: const Text("Projects Home"),
+        actions: [
+          ToggleButtons(
+            children: const <Widget>[
+              Icon(Icons.list),
+              Icon(Icons.window),
+            ],
+            onPressed: (int index) {
+              setState(() {
+                for (int buttonIndex = 0;
+                    buttonIndex < isSelected.length;
+                    buttonIndex++) {
+                  if (buttonIndex == index) {
+                    isSelected[buttonIndex] = true;
+                  } else {
+                    isSelected[buttonIndex] = false;
+                  }
+                }
+                listView = isSelected[0];
+              });
+            },
+            isSelected: isSelected,
+          ),
+        ],
+      ),
       body: Center(
           child: ListView.builder(
         // Let the ListView know how many items it needs to build.
@@ -65,8 +90,6 @@ class _HomeState extends State<Home> {
         // Convert each item into a widget based on the type of item it is.
         itemBuilder: (context, index) {
           Map<String, dynamic> data = projectRefs[index];
-
-          // print(data.length);
           if (listView) {
             return ListTile(
               title: Text(data["title"]),
@@ -87,24 +110,38 @@ class _HomeState extends State<Home> {
               },
             );
           } else {
-            return Card(
-              color: Colors.white,
-              shadowColor: Colors.white70,
-              elevation: 10.0,
-              child: Column(
-                children: [Text(data["title"]), Text(data["description"])],
+            return Container(
+              alignment: AlignmentDirectional.topStart,
+              padding: EdgeInsets.all(10.0),
+              width: 100,
+              child: Card(
+                margin: EdgeInsets.all(8.0),
+                color: Colors.white,
+                shadowColor: Colors.white70,
+                elevation: 10.0,
+                child: InkWell(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Text(data["title"]),
+                        Text(data["description"])
+                      ],
+                    ),
+                  ),
+                  onTap: () async {
+                    String id = await getId(index);
+                    // print(id);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ProjectTabs(
+                                id: id,
+                              )), // pass in id or data - data easier, but should get id
+                    );
+                  },
+                ),
               ),
-              // onTap: () async {
-              //   String id = await getId(index);
-              //   // print(id);
-              //   Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //         builder: (context) => ProjectTabs(
-              //               id: id,
-              //             )), // pass in id or data - data easier, but should get id
-              //   );
-              // },
             );
           }
         },
@@ -127,7 +164,7 @@ class _HomeState extends State<Home> {
   }
 }
 
-Widget _buildWait() {
+Widget buildWait() {
   return Scaffold(
     appBar: AppBar(title: Text('Loading...')),
     body: Center(child: CircularProgressIndicator()),
