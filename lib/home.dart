@@ -23,9 +23,7 @@ class _HomeState extends State<Home> {
   late Future<List> projectRefs;
   bool listView = true;
   refresh() {
-    setState(() {
-      print("refresh");
-    });
+    setState(() {});
   }
 
   @override
@@ -54,14 +52,26 @@ class _HomeState extends State<Home> {
 
   Widget buildPage(List projectRefs) {
     List<bool> isSelected = <bool>[true, false];
+    var size = MediaQuery.of(context).size;
+
+    /*24 is for notification bar on Android*/
+    final double itemHeight = (size.height - kToolbarHeight) / 2;
+    final double itemWidth = size.width / 2;
     return Scaffold(
       //need to use projects list from user doc!!
       appBar: AppBar(
         title: const Text("Projects Home"),
-        actions: [
+        // actions: [],
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
           ToggleButtons(
             children: const <Widget>[
-              Icon(Icons.list),
+              Icon(
+                Icons.list,
+                color: Colors.black,
+              ),
               Icon(Icons.window),
             ],
             onPressed: (int index) {
@@ -80,72 +90,93 @@ class _HomeState extends State<Home> {
             },
             isSelected: isSelected,
           ),
+          Flexible(
+            child: Center(
+              child: listView
+                  ? ListView.builder(
+                      // Let the ListView know how many items it needs to build.
+                      itemCount: projectRefs.length,
+                      // Provide a builder function. This is where the magic happens.
+                      // Convert each item into a widget based on the type of item it is.
+                      itemBuilder: (context, index) {
+                        Map<String, dynamic> data = projectRefs[index];
+
+                        return ListTile(
+                          title: Text(data["title"]),
+                          subtitle: Text(data["description"]),
+                          onTap: () async {
+                            String id = await getId(index);
+                            // print(id);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ProjectTabs(
+                                        id: id,
+                                      )), // pass in id or data - data easier, but should get id
+                            );
+                          },
+                          onLongPress: () {
+                            // delete?
+                          },
+                        );
+                      })
+                  : GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        childAspectRatio: (itemWidth / itemHeight),
+                        crossAxisCount: 4,
+                        crossAxisSpacing: 4,
+                        mainAxisExtent: 150,
+                      ),
+                      itemCount: projectRefs.length,
+                      // Provide a builder function. This is where the magic happens.
+                      // Convert each item into a widget based on the type of item it is.
+                      itemBuilder: (context, index) {
+                        Map<String, dynamic> data = projectRefs[index];
+
+                        return Card(
+                          margin: EdgeInsets.all(8.0),
+                          color: Colors.white,
+                          shadowColor: Colors.white70,
+                          elevation: 10.0,
+                          child: InkWell(
+                            child: Container(
+                              width: itemWidth,
+                              height: itemHeight,
+                              alignment: AlignmentDirectional.topStart,
+                              padding: EdgeInsets.all(10.0),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      data["title"],
+                                      style: TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(data["description"])
+                                  ],
+                                ),
+                              ),
+                            ),
+                            onTap: () async {
+                              String id = await getId(index);
+                              // print(id);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ProjectTabs(
+                                          id: id,
+                                        )), // pass in id or data - data easier, but should get id
+                              );
+                            },
+                          ),
+                        );
+                      }),
+            ),
+          )
         ],
       ),
-      body: Center(
-          child: ListView.builder(
-        // Let the ListView know how many items it needs to build.
-        itemCount: projectRefs.length,
-        // Provide a builder function. This is where the magic happens.
-        // Convert each item into a widget based on the type of item it is.
-        itemBuilder: (context, index) {
-          Map<String, dynamic> data = projectRefs[index];
-          if (listView) {
-            return ListTile(
-              title: Text(data["title"]),
-              subtitle: Text(data["description"]),
-              onTap: () async {
-                String id = await getId(index);
-                // print(id);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ProjectTabs(
-                            id: id,
-                          )), // pass in id or data - data easier, but should get id
-                );
-              },
-              onLongPress: () {
-                // delete?
-              },
-            );
-          } else {
-            return Container(
-              alignment: AlignmentDirectional.topStart,
-              padding: EdgeInsets.all(10.0),
-              width: 100,
-              child: Card(
-                margin: EdgeInsets.all(8.0),
-                color: Colors.white,
-                shadowColor: Colors.white70,
-                elevation: 10.0,
-                child: InkWell(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        Text(data["title"]),
-                        Text(data["description"])
-                      ],
-                    ),
-                  ),
-                  onTap: () async {
-                    String id = await getId(index);
-                    // print(id);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ProjectTabs(
-                                id: id,
-                              )), // pass in id or data - data easier, but should get id
-                    );
-                  },
-                ),
-              ),
-            );
-          }
-        },
-      )),
 
       drawer: SideMenu(),
       floatingActionButton: FloatingActionButton(
@@ -154,7 +185,7 @@ class _HomeState extends State<Home> {
             context,
             MaterialPageRoute(
                 builder: (context) => NewProject(
-                      notifyParent: refresh, //not working
+                      notifyParent: refresh(), //not working
                     )),
           );
         },

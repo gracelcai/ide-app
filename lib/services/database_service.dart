@@ -35,8 +35,6 @@ class DatabaseService {
             }))) // add to array in user's doc
         .catchError((error) => () {});
 
-    print("Created project");
-
     return project;
   }
 
@@ -72,6 +70,23 @@ class DatabaseService {
       'projects': FieldValue.arrayUnion([project])
     });
     print("added $email");
+  }
+
+  Future<void> createLink(
+      String name, String description, String link, String projectId) async {
+    // Call the user's CollectionReference to add a new user
+    // array of references user's projects in user document
+    // projects in separate collection with array of references to members
+
+    CollectionReference links = FirebaseFirestore.instance
+        .collection("projects")
+        .doc(projectId)
+        .collection("links");
+    links.add({
+      'name': name,
+      'description': description,
+      'link': link,
+    });
   }
 
   // Future<DocumentSnapshot<Object?>> getProjects(User user) async {

@@ -1,7 +1,6 @@
-import 'dart:js';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:ide_app/project_files.dart';
 import 'package:ide_app/project_home.dart';
 import 'package:ide_app/widgets/drawer.dart';
 import 'package:ide_app/project_people.dart';
@@ -76,8 +75,7 @@ Widget _buildPage(String id, Map<String, dynamic> data) {
         body: TabBarView(
           children: [
             ProjectHome(id: id, data: data), //replace with pagewidgets
-            Text(
-                'will display your shared files and links'), //put in separate files?
+            ProjectFiles(id: id), //put in separate files?
             Text('will display the project schedule'),
             Text('will allow you to communicate with your group'),
             ProjectPeople(id: id),
