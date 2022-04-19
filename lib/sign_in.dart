@@ -31,89 +31,98 @@ class _SignInState extends State<SignIn> {
       body: SafeArea(
         minimum: const EdgeInsets.all(100.0),
         child: Center(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                            decoration: const InputDecoration(
-                              border: UnderlineInputBorder(),
-                              hintText: 'Email',
-                            ),
-                            controller: emailTextController),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                            enableSuggestions: false,
-                            autocorrect: false,
-                            obscureText: true,
-                            decoration: const InputDecoration(
+          child: Container(
+            // color: Colors.white,
+            width: 500,
+
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                              decoration: const InputDecoration(
                                 border: UnderlineInputBorder(),
-                                hintText: 'Password'),
-                            controller: passwordTextController),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                Container(
-                  height: 40,
-                  width: 300,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      elevation: 6.0,
-                      primary: Colors.indigoAccent, // background
-                      onPrimary: Colors.white, // foreground
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          side: const BorderSide(color: Colors.indigoAccent)),
+                                hintText: 'Email',
+                              ),
+                              controller: emailTextController),
+                        ),
+                      ],
                     ),
-                    onPressed: () {
-                      context
-                          .read<AuthenticationService>()
-                          .signIn(
-                            email: emailTextController.text.trim(),
-                            password: passwordTextController.text.trim(),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                              enableSuggestions: false,
+                              autocorrect: false,
+                              obscureText: true,
+                              decoration: const InputDecoration(
+                                  border: UnderlineInputBorder(),
+                                  hintText: 'Password'),
+                              controller: passwordTextController),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Container(
+                    height: 40,
+                    width: 300,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        elevation: 6.0,
+                        primary: Colors.indigoAccent, // background
+                        onPrimary: Colors.white, // foreground
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                            side: const BorderSide(color: Colors.indigoAccent)),
+                      ),
+                      onPressed: () {
+                        context
+                            .read<AuthenticationService>()
+                            .signIn(
+                              email: emailTextController.text.trim(),
+                              password: passwordTextController.text.trim(),
+                            )
+                            .then((result) => showSnackbar(context, result!));
+                      },
+                      child: Text('Sign In'),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 24,
+                  ),
+                  Container(
+                    width: 250,
+                    child: InkWell(
+                      // borderRadius: BorderRadius.circular(15),
+                      onTap: () => Navigator.pushNamed(context, '/signup'),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Don't have an account? "),
+                          Text(
+                            'Sign up.',
+                            style: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                                fontWeight: FontWeight.w600),
                           )
-                          .then((result) => showSnackbar(context, result!));
-                    },
-                    child: Text('Sign In'),
-                  ),
-                ),
-                const SizedBox(
-                  height: 24,
-                ),
-                InkWell(
-                  onTap: () => Navigator.pushNamed(context, '/signup'),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Don't have an account? "),
-                      Text(
-                        'Sign up.',
-                        style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontWeight: FontWeight.w600),
-                      )
-                    ],
-                  ),
-                )
-              ],
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),

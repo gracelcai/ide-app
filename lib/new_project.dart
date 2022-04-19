@@ -1,12 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:ide_app/home.dart';
 import 'package:ide_app/services/database_service.dart';
 import 'package:provider/provider.dart';
 import 'services/authentication_service.dart';
 
 class NewProject extends StatefulWidget {
-  final Function() notifyParent;
-  NewProject({Key? key, required this.notifyParent}) : super(key: key);
+  // final Function() notifyParent;
+  NewProject({Key? key}) : super(key: key);
   @override
   State<NewProject> createState() => _NewProjectState();
 }
@@ -72,7 +73,7 @@ class _NewProjectState extends State<NewProject> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       // If the form is valid, display a snackbar. In the real world,
                       // you'd often call a server or save the information in a database.
@@ -80,7 +81,7 @@ class _NewProjectState extends State<NewProject> {
                         const SnackBar(content: Text('Creating Project...')),
                       );
                       final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-                      context.read<DatabaseService>().createProject(
+                      await context.read<DatabaseService>().createProject(
                           titleTextController.text,
                           descriptionTextController.text,
                           goalsTextController.text,
@@ -88,7 +89,8 @@ class _NewProjectState extends State<NewProject> {
                       //also needs to somehow make a project that shows up in home page
                       Navigator.pop(context);
 
-                      widget.notifyParent();
+                      // widget.notifyParent();
+
                     }
                   },
                   child: const Text('Create Project'),

@@ -90,8 +90,7 @@ class _ProjectPeopleState extends State<ProjectPeople> {
       child: ListView.builder(
         // Let the ListView know how many items it needs to build.
         itemCount: members.length,
-        // Provide a builder function. This is where the magic happens.
-        // Convert each item into a widget based on the type of item it is.
+
         itemBuilder: (context, index) {
           final data = members[index];
 
@@ -139,12 +138,6 @@ Future<List> getMembers(String projectId) async {
     final data = member.data() as Map<String, dynamic>;
     memberData.add(data); //change to email or name and role not adding!!
   }
-  // memberRefs.forEach((key, value) async {
-  //   print(key);
-  //   DocumentSnapshot member = await users.doc(key).get();
-  //   final data = member.data() as Map<String, dynamic>;
-  //   memberData.add(data); //change to email or name and role not adding!!
-  // });
 
   print(memberData);
   return memberData;

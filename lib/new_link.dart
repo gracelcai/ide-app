@@ -5,10 +5,9 @@ import 'package:provider/provider.dart';
 import 'services/authentication_service.dart';
 
 class NewLink extends StatefulWidget {
-  final Function() notifyParent;
+  // final Function() notifyParent;
   final String projectId;
-  NewLink({Key? key, required this.projectId, required this.notifyParent})
-      : super(key: key);
+  NewLink({Key? key, required this.projectId}) : super(key: key);
   @override
   State<NewLink> createState() => _NewLinkState();
 }
@@ -25,7 +24,7 @@ class _NewLinkState extends State<NewLink> {
   Widget build(BuildContext context) {
     bool validate = false;
     return Scaffold(
-        appBar: AppBar(title: Text("New Project")),
+        appBar: AppBar(title: Text("New Link")),
         body: Form(
           key: _formKey,
           child: Column(
@@ -80,7 +79,7 @@ class _NewLinkState extends State<NewLink> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       // If the form is valid, display a snackbar. In the real world,
                       // you'd often call a server or save the information in a database.
@@ -88,7 +87,7 @@ class _NewLinkState extends State<NewLink> {
                         const SnackBar(content: Text('Creating Project...')),
                       );
                       final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-                      context.read<DatabaseService>().createLink(
+                      await context.read<DatabaseService>().createLink(
                           nameTextController.text,
                           descriptionTextController.text,
                           linkTextController.text,
@@ -96,7 +95,7 @@ class _NewLinkState extends State<NewLink> {
                       //also needs to somehow make a project that shows up in home page
                       Navigator.pop(context);
 
-                      widget.notifyParent();
+                      // widget.notifyParent();
                     }
                   },
                   child: const Text('Create Link'),

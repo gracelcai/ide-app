@@ -22,9 +22,9 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   late Future<List> projectRefs;
   bool listView = true;
-  refresh() {
-    setState(() {});
-  }
+  // refresh() {
+  //   print("refresh");
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +75,19 @@ class _HomeState extends State<Home> {
               Icon(Icons.window),
             ],
             onPressed: (int index) {
+              // WidgetsBinding.instance!.addPostFrameCallback((_) {
+              //   for (int buttonIndex = 0;
+              //       buttonIndex < isSelected.length;
+              //       buttonIndex++) {
+              //     if (buttonIndex == index) {
+              //       isSelected[buttonIndex] = true;
+              //     } else {
+              //       isSelected[buttonIndex] = false;
+              //     }
+              //   }
+              //   listView = isSelected[0];
+              //   // Add Your Code here.
+              // });
               setState(() {
                 for (int buttonIndex = 0;
                     buttonIndex < isSelected.length;
@@ -106,7 +119,6 @@ class _HomeState extends State<Home> {
                           subtitle: Text(data["description"]),
                           onTap: () async {
                             String id = await getId(index);
-                            // print(id);
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -185,9 +197,12 @@ class _HomeState extends State<Home> {
             context,
             MaterialPageRoute(
                 builder: (context) => NewProject(
-                      notifyParent: refresh(), //not working
+                    // notifyParent: refresh(), //not working
                     )),
-          );
+          ).then((_) => setState(() {
+                print("refresh");
+                print(projectRefs.length);
+              }));
         },
         child: Icon(Icons.add),
       ),

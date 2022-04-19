@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:ide_app/services/database_service.dart';
 import 'package:ide_app/sign_up.dart';
 import 'package:ide_app/splash.dart';
+import 'package:ide_app/widgets/projectInnerPages.dart';
 import 'services/authentication_service.dart';
 // screens
 import 'home.dart';
@@ -61,7 +62,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
             visualDensity: VisualDensity.adaptivePlatformDensity,
             primaryColor: Colors.indigoAccent),
-        initialRoute: '/',
+        initialRoute: '/auth',
         routes: {
           '/': (context) => Splash(),
           '/auth': (context) => AuthenticationWrapper(),
