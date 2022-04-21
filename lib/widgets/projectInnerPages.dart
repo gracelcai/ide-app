@@ -57,7 +57,7 @@ Widget _buildPage(String id, Map<String, dynamic> data) {
                 text: 'Overview',
               ),
               Tab(
-                text: 'Files',
+                text: 'Resources',
               ),
               Tab(
                 text: 'Schedule',
