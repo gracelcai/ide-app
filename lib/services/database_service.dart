@@ -143,17 +143,31 @@ class DatabaseService {
     return data["userid"];
   }
 
-  Future<void> addTask(String task) async {
-    print(await getUserDocId());
+  Future<void> addTask(
+      String task, bool complete, String day, String month) async {
+    //print(await getUserDocId());
     Future<void> newTask = FirebaseFirestore.instance
         .collection('users')
         .doc(await getUserDocId())
         .collection('tasks')
         .add({
       'task': task,
-      'complete': false,
+      'complete': complete,
+      'day': int.parse(day),
+      'month': int.parse(month),
     });
     print("Added task");
     return newTask;
+  }
+
+  Future<void> toggleTask(String taskID, bool completed) async {
+    Future<void> newTask = FirebaseFirestore.instance
+        .collection('users')
+        .doc(await getUserDocId())
+        .collection('tasks')
+        .doc(taskID)
+        .update({
+      'complete': completed,
+    });
   }
 }
