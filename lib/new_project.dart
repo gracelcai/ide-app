@@ -56,6 +56,7 @@ class _NewProjectState extends State<NewProject> {
                     labelText: 'Project Description',
                   ),
                   controller: descriptionTextController,
+                  maxLines: null,
                 ),
               ),
               Padding(
@@ -67,6 +68,7 @@ class _NewProjectState extends State<NewProject> {
                     labelText: 'Project Goals',
                   ),
                   controller: goalsTextController,
+                  maxLines: null,
                 ),
               ),
               Padding(

@@ -20,7 +20,7 @@ class _SignUpState extends State<SignUp> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         elevation: 0,
-        backgroundColor: Colors.indigoAccent,
+        backgroundColor: Colors.blue,
         title: const Text(
           'Sign up',
           style: TextStyle(
@@ -86,11 +86,11 @@ class _SignUpState extends State<SignUp> {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         elevation: 6.0,
-                        primary: Colors.indigoAccent, // background
+                        primary: Colors.blue, // background
                         onPrimary: Colors.white, // foreground
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
-                            side: const BorderSide(color: Colors.indigoAccent)),
+                            side: const BorderSide(color: Colors.blue)),
                       ),
                       onPressed: () async {
                         String name = nameTextController.text.trim();
@@ -106,19 +106,6 @@ class _SignUpState extends State<SignUp> {
                         if (result == "Signed up") {
                           Navigator.popUntil(
                               context, ModalRoute.withName('/auth'));
-
-                          // FirebaseFirestore firestore =
-                          //     FirebaseFirestore.instance;
-                          // CollectionReference users =
-                          //     FirebaseFirestore.instance.collection('users');
-                          // userDoc = users
-                          //     .add({'name': name, 'email': email})
-                          //     .then((value) => () {
-                          //           print("$value User Added");
-                          //
-                          //         })
-                          //     .catchError(
-                          //         (error) => print("Failed to add user: $error"));
                         }
                       },
                       child: Text('Create Account'),

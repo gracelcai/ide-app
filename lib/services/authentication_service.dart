@@ -73,10 +73,11 @@ class AuthenticationService {
 
   Future<DocumentReference<Object?>> getUserDoc() async {
     User? user = _firebaseAuth.currentUser;
-    QuerySnapshot querySnap =
-        await users.where('userid', isEqualTo: user!.uid).get();
-    QueryDocumentSnapshot doc = querySnap.docs[0];
-    DocumentReference userDoc = doc.reference;
-    return userDoc;
+    // QuerySnapshot querySnap =
+    //     await users.where('userid', isEqualTo: user!.uid).get();
+    // QueryDocumentSnapshot doc = querySnap.docs[0];
+    // DocumentReference userDoc = doc.reference;
+    // return userDoc;
+    return FirebaseFirestore.instance.collection("users").doc(user!.uid);
   }
 }

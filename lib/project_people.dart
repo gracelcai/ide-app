@@ -40,10 +40,10 @@ class _ProjectPeopleState extends State<ProjectPeople> {
   }
 
   Widget buildWait() {
-    return Scaffold(
-      appBar: AppBar(title: Text('Loading...')),
-      body: Center(child: CircularProgressIndicator()),
-    );
+    return Center(
+        child: Column(
+      children: [CircularProgressIndicator(), Text('Loading...')],
+    ));
   }
 
   Widget buildPage(List members) {

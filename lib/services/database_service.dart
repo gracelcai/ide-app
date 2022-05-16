@@ -49,9 +49,21 @@ class DatabaseService {
       'description': description,
       'goals': goals, // add members
     }).catchError((error) => () {});
+    return project;
+  }
 
-    print("Updated project");
+  Future<void> updateLink(String projectId, String linkId, String name,
+      String description, String link) async {
+    // Call the user's CollectionReference to add a new user
+    // array of references user's projects in user document
+    // projects in separate collection with array of references to members
 
+    Future<void> project =
+        projects.doc(projectId).collection('links').doc(linkId).update({
+      'name': name,
+      'description': description,
+      'link': link, // add members
+    }).catchError((error) => () {});
     return project;
   }
 

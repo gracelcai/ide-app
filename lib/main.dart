@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
             visualDensity: VisualDensity.adaptivePlatformDensity,
-            primaryColor: Colors.indigoAccent),
+            primaryColor: Colors.blue),
         initialRoute: '/auth',
         routes: {
           '/': (context) => Splash(),

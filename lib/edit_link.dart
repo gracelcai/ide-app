@@ -5,23 +5,26 @@ import 'package:ide_app/services/database_service.dart';
 import 'package:provider/provider.dart';
 import 'services/authentication_service.dart';
 
-class EditProject extends StatefulWidget {
+class EditLink extends StatefulWidget {
   // final Function() notifyParent;
-  final String id;
-  EditProject({Key? key, required this.id}) : super(key: key);
+  final String projectId;
+  final String linkId;
+  EditLink({Key? key, required this.projectId, required this.linkId})
+      : super(key: key);
   @override
-  State<EditProject> createState() => _EditProjectState();
+  State<EditLink> createState() => _EditLinkState();
 }
 
 @override
-class _EditProjectState extends State<EditProject> {
+class _EditLinkState extends State<EditLink> {
   // TODO: implement createState
 
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    Future<Map<String, dynamic>> projectData = getProjectData(widget.id);
+    Future<Map<String, dynamic>> projectData =
+        getProjectData(widget.projectId, widget.linkId);
 
     bool validate = false;
     return FutureBuilder<Map<String, dynamic>>(
@@ -46,13 +49,13 @@ class _EditProjectState extends State<EditProject> {
 
   Widget buildPage(Map<String, dynamic> data) {
     TextEditingController titleTextController =
-        TextEditingController(text: data["title"]);
+        TextEditingController(text: data["name"]);
     TextEditingController descriptionTextController =
         TextEditingController(text: data["description"]);
-    TextEditingController goalsTextController =
-        TextEditingController(text: data["goals"]);
+    TextEditingController linkTextController =
+        TextEditingController(text: data["link"]);
     return Scaffold(
-      appBar: AppBar(title: Text("Edit Project")),
+      appBar: AppBar(title: Text("Edit Link")),
       body: Form(
         key: _formKey,
         child: Column(
@@ -69,7 +72,7 @@ class _EditProjectState extends State<EditProject> {
                 },
                 decoration: const InputDecoration(
                   border: UnderlineInputBorder(),
-                  labelText: 'Project Title',
+                  labelText: 'Name',
                 ),
                 controller: titleTextController,
               ),
@@ -79,10 +82,9 @@ class _EditProjectState extends State<EditProject> {
               child: TextFormField(
                 decoration: const InputDecoration(
                   border: UnderlineInputBorder(),
-                  labelText: 'Project Description',
+                  labelText: 'Description',
                 ),
                 controller: descriptionTextController,
-                maxLines: null,
               ),
             ),
             Padding(
@@ -90,32 +92,32 @@ class _EditProjectState extends State<EditProject> {
               child: TextFormField(
                 decoration: const InputDecoration(
                   border: UnderlineInputBorder(),
-                  labelText: 'Project Goals',
+                  labelText: 'Link',
                 ),
-                controller: goalsTextController,
-                maxLines: null,
+                controller: linkTextController,
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
               child: ElevatedButton(
-                onPressed: () async {
+                onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     // If the form is valid, display a snackbar. In the real world,
                     // you'd often call a server or save the information in a database.
 
                     final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-                    await context.read<DatabaseService>().updateProject(
-                          widget.id,
+                    context.read<DatabaseService>().updateLink(
+                          widget.projectId,
+                          widget.linkId,
                           titleTextController.text,
                           descriptionTextController.text,
-                          goalsTextController.text,
+                          linkTextController.text,
                         );
                     //also needs to somehow make a project that shows up in home page
                     Navigator.pop(context);
                   }
                 },
-                child: const Text('Update Project'),
+                child: const Text('Update Link'),
               ),
             )
           ],
@@ -131,9 +133,14 @@ class _EditProjectState extends State<EditProject> {
     );
   }
 
-  Future<Map<String, dynamic>> getProjectData(String id) async {
-    DocumentSnapshot project =
-        await FirebaseFirestore.instance.collection("projects").doc(id).get();
+  Future<Map<String, dynamic>> getProjectData(
+      String projectId, String linkId) async {
+    DocumentSnapshot project = await FirebaseFirestore.instance
+        .collection("projects")
+        .doc(projectId)
+        .collection("links")
+        .doc(linkId)
+        .get();
     final data = project.data() as Map<String, dynamic>;
     return data;
   }

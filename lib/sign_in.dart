@@ -21,7 +21,7 @@ class _SignInState extends State<SignIn> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         elevation: 0,
-        backgroundColor: Colors.indigoAccent,
+        backgroundColor: Colors.blue,
         title: const Text(
           'Sign in',
           style: TextStyle(
@@ -81,11 +81,11 @@ class _SignInState extends State<SignIn> {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         elevation: 6.0,
-                        primary: Colors.indigoAccent, // background
+                        primary: Theme.of(context).primaryColor, // background
                         onPrimary: Colors.white, // foreground
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
-                            side: const BorderSide(color: Colors.indigoAccent)),
+                            side: const BorderSide(color: Colors.blue)),
                       ),
                       onPressed: () {
                         context
