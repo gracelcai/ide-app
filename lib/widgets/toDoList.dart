@@ -4,8 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ide_app/home.dart';
 import 'package:ide_app/myTaskPage.dart';
 import 'package:ide_app/services/database_service.dart';
+import 'package:ide_app/widgets/drawer.dart';
 import 'package:provider/provider.dart';
 import 'package:ide_app/services/authentication_service.dart';
+import 'package:ide_app/calendar_page.dart';
 
 class TodoList extends StatefulWidget {
   @override
@@ -15,27 +17,34 @@ class TodoList extends StatefulWidget {
 class _TodoListState extends State<TodoList> {
   final List<String> _todoList = <String>[];
   final TextEditingController newTask = TextEditingController();
+  final TextEditingController day = TextEditingController();
+  final TextEditingController month = TextEditingController();
+  late List<bool> _isSelected;
 
   @override
   Widget build(BuildContext context) {
-    Future<Widget> tasks = getTasks();
+    Future<Scaffold> taskList = getTaskList();
     return FutureBuilder(
-        future: tasks,
+        future: taskList,
         builder: ((context, snapshot) {
-          if (snapshot.hasError)
-            return Center(child: Text(snapshot.error.toString()));
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Scaffold(
-              appBar: AppBar(title: Text('Loading...')),
-              body: Center(child: CircularProgressIndicator()),
-            );
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+              return Text("none");
+            case ConnectionState.active:
+            case ConnectionState.waiting:
+              return Text("active and waiting");
+            case ConnectionState.done:
+              return buildPage(snapshot.data as Scaffold);
+            default:
+              return Text("default");
           }
-          return buildPage();
         }));
   }
 
-  Widget buildPage() {
+  Widget buildPage(Scaffold taskList) {
     return Scaffold(
+      body: taskList,
+      drawer: SideMenu(),
       // body: Center(
       //   //   child: ListView.builder(
       //   // // Let the ListView know how many items it needs to build.
@@ -62,12 +71,11 @@ class _TodoListState extends State<TodoList> {
   void _addTodoItem(String title) {
     // Wrapping it inside a set state will notify
     // the app that the state has changed
-    final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-    context.read<DatabaseService>().addTask(
-          newTask.text,
-        );
+    //final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+    context
+        .read<DatabaseService>()
+        .addTask(newTask.text, false, day.text, month.text);
     //supposed to add task to db
-    print("added task to database");
     setState(() {
       _todoList.add(title);
     });
@@ -85,10 +93,30 @@ class _TodoListState extends State<TodoList> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Add a task to your list'),
-            content: TextField(
-              controller: newTask,
-              decoration: const InputDecoration(hintText: 'Enter task here'),
+            content: Column(
+              children: [
+                TextField(
+                  controller: newTask,
+                  decoration:
+                      const InputDecoration(hintText: 'Enter task here'),
+                ),
+                TextField(
+                  controller: day,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(hintText: 'Enter day here'),
+                ),
+                TextField(
+                  controller: month,
+                  keyboardType: TextInputType.number,
+                  decoration:
+                      const InputDecoration(hintText: 'Enter month here'),
+                ),
+              ],
             ),
+            // TextField(
+            //   controller: newTask,
+            //   decoration: const InputDecoration(hintText: 'Enter task here'),
+            // ),
             actions: <Widget>[
               ElevatedButton(
                 child: const Text('ADD'),
@@ -123,94 +151,55 @@ class _TodoListState extends State<TodoList> {
     );
   }
 
-  Future<Widget> getTasks() async {
+  Future<Scaffold> getTaskList() async {
     final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
-
+    //print("called get tasks");
     final databaseService = DatabaseService(_firebaseFirestore);
     String docId = await databaseService.getUserDocId(); // ERROr
     CollectionReference tasks = FirebaseFirestore.instance
         .collection('users')
         .doc(docId)
         .collection('tasks');
+    resetMeetingList();
     return Scaffold(
         // ignore: unnecessary_new
-        body: new StreamBuilder(
+        body: StreamBuilder(
       stream: tasks.snapshots(),
-      builder: (_, AsyncSnapshot<QuerySnapshot> snapshot) {
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError) {
+          print("Error with snapshot");
+        }
         if (!snapshot.hasData) {
-          return Center(
-            child: Text('Data not available'),
+          return const Center(
+            child: CircularProgressIndicator(),
           );
         }
-        final task = snapshot.data?.docs;
-        List<String> textWidgets = [];
-        task?.forEach((element) {
-          final taskdescription = element['task'];
-          final complete = element['complete'];
-          //final textWidget = Text(taskdescription);
-          textWidgets.add(taskdescription);
-        });
-        return ListView.builder(
-          // Let the ListView know how many items it needs to build.
-          itemCount: textWidgets.length,
-          // Provide a builder function. This is where the magic happens.
-          // Convert each item into a widget based on the type of item it is.
-          itemBuilder: (context, index) {
-            return ListTile(
-              title: Text(textWidgets[index]),
+        return ListView(
+          children: snapshot.data!.docs.map((document) {
+            DateTime start = DateTime(2022, document['month'], document['day']);
+            addMeeting(Meeting(document['task'], start, start,
+                const Color.fromARGB(255, 33, 150, 243), true));
+            return Center(
+              child: CheckboxListTile(
+                  title: Text(document['task']),
+                  subtitle: Text(document['month'].toString() +
+                      "/" +
+                      document['day'].toString()),
+                  value: document['complete'],
+                  secondary: Container(
+                    height: 50,
+                    width: 50,
+                  ),
+                  onChanged: (bool? value) {
+                    setState(() {
+                      final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+                      databaseService.toggleTask(document.id, value!);
+                    });
+                  }),
             );
-          },
+          }).toList(),
         );
       },
-    )
-
-        /*new Lost_Card(
-        headImageAssetPath: "https://i.imgur.com/FtaGNck.jpg" ,
-        title: "Mega Dish",
-        noro: "old",
-
-
-      // )*/
-        // ,
-        // floatingActionButton:
-        //     new FloatingActionButton(child: new Icon(Icons.add), onPressed: _add),
-        );
-    // print("trying to get tasks");
-    // final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
-
-    // final databaseService = DatabaseService(_firebaseFirestore);
-    // String docId = await databaseService.getUserDocId(); // ERROr
-    // CollectionReference tasks = FirebaseFirestore.instance
-    //     .collection('users')
-    //     .doc(docId)
-    //     .collection('tasks');
-    // new StreamBuilder(
-    //   stream: tasks.snapshots(),
-    //   builder: (context, snapshot));
-    // DocumentReference userDoc =
-    //     FirebaseFirestore.instance.collection("users").doc(docId);
-    // DocumentSnapshot snapshot = await userDoc.get();
-    // final data = snapshot.data() as Map<String, dynamic>;
-
-    // // print(data["projects"]);
-
-    // List taskList = data["tasks"];
-    // if (taskList == null) {
-    //   print("taskList IS NULL");
-    // }
-    // List<Map<String, dynamic>> taskData = data["tasks"];
-    // if (taskData == null) {
-    //   print("TaskData IS NULL");
-    // }
-    // for (DocumentReference ref in taskList) {
-    //   DocumentSnapshot task = await tasks.doc(ref.id).get();
-    //   final data = task.data() as Map<String, dynamic>;
-
-    //   taskData.add(data);
-    // }
-    // if (taskData == null) {
-    //   print("task data is null, list did not initialize properly");
-    // }
-    //return taskData;
+    ));
   }
 }
