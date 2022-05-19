@@ -161,7 +161,7 @@ class _ProjectTaskState extends State<ProjectTasks> {
         .collection('projects')
         .doc(widget.projectId)
         .collection('tasks');
-    // resetMeetingList();
+    resetProjectMeetingList();
     return Scaffold(
         // ignore: unnecessary_new
         body: StreamBuilder(
