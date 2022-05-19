@@ -50,7 +50,7 @@ class DatabaseService {
       'goals': goals, // add members
     }).catchError((error) => () {});
 
-    print("Updated project");
+    //("Updated project");
 
     return project;
   }
@@ -69,7 +69,7 @@ class DatabaseService {
     newMember.update({
       'projects': FieldValue.arrayUnion([project])
     });
-    print("added $email");
+    //("added $email");
   }
 
   Future<void> createLink(
@@ -136,7 +136,7 @@ class DatabaseService {
   }
 
   Future<String> getUserIdFromDoc(String id) async {
-    print(id);
+    //print(id);
     DocumentSnapshot doc =
         await FirebaseFirestore.instance.collection("users").doc(id).get();
     final data = doc.data() as Map<String, dynamic>;
@@ -156,7 +156,7 @@ class DatabaseService {
       'day': int.parse(day),
       'month': int.parse(month),
     });
-    print("Added task");
+    //print("Added task");
     return newTask;
   }
 
@@ -196,7 +196,7 @@ class DatabaseService {
       'day': int.parse(day),
       'month': int.parse(month),
     });
-    print("Added project task");
+    //print("Added project task");
     return newTask;
   }
 }
