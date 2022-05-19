@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:ide_app/project_calendarPage.dart';
 import 'package:ide_app/project_files.dart';
 import 'package:ide_app/project_home.dart';
 import 'package:ide_app/widgets/drawer.dart';
 import 'package:ide_app/project_people.dart';
+import 'package:ide_app/project_taskList.dart';
 
 // void main() {
 //   runApp(ProjectTabs());
@@ -76,8 +78,8 @@ Widget _buildPage(String id, Map<String, dynamic> data) {
           children: [
             ProjectHome(id: id, data: data), //replace with pagewidgets
             ProjectFiles(id: id), //put in separate files?
-            Text('will display the project schedule'),
-            Text('will allow you to communicate with your group'),
+            ProjectTasks(projectId: id),
+            ProjectCalendarPage(),
             ProjectPeople(id: id),
           ],
         ),

@@ -170,4 +170,33 @@ class DatabaseService {
       'complete': completed,
     });
   }
+
+  Future<void> toggleProjectTask(
+      String taskID, bool completed, String projectID) async {
+    Future<void> newTask = FirebaseFirestore.instance
+        .collection('projects')
+        .doc(projectID)
+        .collection('tasks')
+        .doc(taskID)
+        .update({
+      'complete': completed,
+    });
+  }
+
+  Future<void> addProjectTask(String task, bool complete, String day,
+      String month, String projectID) async {
+    //print(await getUserDocId());
+    Future<void> newTask = FirebaseFirestore.instance
+        .collection('projects')
+        .doc(projectID)
+        .collection('tasks')
+        .add({
+      'task': task,
+      'complete': complete,
+      'day': int.parse(day),
+      'month': int.parse(month),
+    });
+    print("Added project task");
+    return newTask;
+  }
 }
