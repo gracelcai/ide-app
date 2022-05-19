@@ -1,20 +1,22 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:ide_app/home.dart';
-import 'package:ide_app/myTaskPage.dart';
+import 'package:flutter/material.dart';
+import 'package:ide_app/project_calendarPage.dart';
 import 'package:ide_app/services/database_service.dart';
-import 'package:ide_app/widgets/drawer.dart';
 import 'package:provider/provider.dart';
-import 'package:ide_app/services/authentication_service.dart';
-import 'package:ide_app/calendar_page.dart';
+import 'package:ide_app/widgets/drawer.dart';
+import 'package:ide_app/widgets/toDoList.dart';
 
-class TodoList extends StatefulWidget {
+import 'calendar_page.dart';
+
+class ProjectTasks extends StatefulWidget {
+  final String projectId;
+  ProjectTasks({Key? key, required this.projectId}) : super(key: key);
   @override
-  _TodoListState createState() => _TodoListState();
+  _ProjectTaskState createState() => _ProjectTaskState();
 }
 
-class _TodoListState extends State<TodoList> {
+class _ProjectTaskState extends State<ProjectTasks> {
   final List<String> _todoList = <String>[];
   final TextEditingController newTask = TextEditingController();
   final TextEditingController day = TextEditingController();
@@ -72,9 +74,8 @@ class _TodoListState extends State<TodoList> {
     // Wrapping it inside a set state will notify
     // the app that the state has changed
     //final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-    context
-        .read<DatabaseService>()
-        .addTask(newTask.text, false, day.text, month.text);
+    context.read<DatabaseService>().addProjectTask(
+        newTask.text, false, day.text, month.text, widget.projectId);
     //supposed to add task to db
     setState(() {
       _todoList.add(title);
@@ -155,12 +156,12 @@ class _TodoListState extends State<TodoList> {
     final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
     //print("called get tasks");
     final databaseService = DatabaseService(_firebaseFirestore);
-    String docId = await databaseService.getUserDocId(); // ERROr
+    //String docId = await databaseService.getUserDocId(); // ERROr
     CollectionReference tasks = FirebaseFirestore.instance
-        .collection('users')
-        .doc(docId)
+        .collection('projects')
+        .doc(widget.projectId)
         .collection('tasks');
-    resetMeetingList();
+    resetProjectMeetingList();
     return Scaffold(
         // ignore: unnecessary_new
         body: StreamBuilder(
@@ -177,8 +178,9 @@ class _TodoListState extends State<TodoList> {
         return ListView(
           children: snapshot.data!.docs.map((document) {
             DateTime start = DateTime(2022, document['month'], document['day']);
-            addMeeting(Meeting(document['task'], start, start,
+            addProjectMeeting(ProjectMeeting(document['task'], start, start,
                 const Color.fromARGB(255, 33, 150, 243), true));
+            //print("displaying task:" + document['task']);
             return Center(
               child: CheckboxListTile(
                   title: Text(document['task']),
@@ -193,7 +195,8 @@ class _TodoListState extends State<TodoList> {
                   onChanged: (bool? value) {
                     setState(() {
                       final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-                      databaseService.toggleTask(document.id, value!);
+                      databaseService.toggleProjectTask(
+                          document.id, value!, widget.projectId);
                     });
                   }),
             );

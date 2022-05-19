@@ -81,7 +81,7 @@ class DatabaseService {
     newMember.update({
       'projects': FieldValue.arrayUnion([project])
     });
-    print("added $email");
+    //("added $email");
   }
 
   Future<void> createLink(
@@ -148,7 +148,7 @@ class DatabaseService {
   }
 
   Future<String> getUserIdFromDoc(String id) async {
-    print(id);
+    //print(id);
     DocumentSnapshot doc =
         await FirebaseFirestore.instance.collection("users").doc(id).get();
     final data = doc.data() as Map<String, dynamic>;
@@ -168,7 +168,7 @@ class DatabaseService {
       'day': int.parse(day),
       'month': int.parse(month),
     });
-    print("Added task");
+    //print("Added task");
     return newTask;
   }
 
@@ -181,5 +181,34 @@ class DatabaseService {
         .update({
       'complete': completed,
     });
+  }
+
+  Future<void> toggleProjectTask(
+      String taskID, bool completed, String projectID) async {
+    Future<void> newTask = FirebaseFirestore.instance
+        .collection('projects')
+        .doc(projectID)
+        .collection('tasks')
+        .doc(taskID)
+        .update({
+      'complete': completed,
+    });
+  }
+
+  Future<void> addProjectTask(String task, bool complete, String day,
+      String month, String projectID) async {
+    //print(await getUserDocId());
+    Future<void> newTask = FirebaseFirestore.instance
+        .collection('projects')
+        .doc(projectID)
+        .collection('tasks')
+        .add({
+      'task': task,
+      'complete': complete,
+      'day': int.parse(day),
+      'month': int.parse(month),
+    });
+    //print("Added project task");
+    return newTask;
   }
 }
