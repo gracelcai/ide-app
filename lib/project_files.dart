@@ -134,7 +134,7 @@ class _ProjectFilesState extends State<ProjectFiles> {
                                   builder: (context) => EditLink(
                                       projectId: widget.id,
                                       linkId: data["id"])))
-                          .then((_) => setState(() {}));
+                          .then((value) => setState(() {}));
                     }
                     // actionPopUpItemSelected(value, data["id"]);
                   }),

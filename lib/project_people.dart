@@ -66,15 +66,15 @@ class _ProjectPeopleState extends State<ProjectPeople> {
           child: ElevatedButton(
             onPressed: () {
               final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-              context.read<DatabaseService>().addProjectMembers(
+              context
+                  .read<DatabaseService>()
+                  .addProjectMembers(
                     widget.id,
                     emailTextController.text,
-                  );
+                  )
+                  .then((value) => setState(() {}));
 
               //reload to show new member
-              setState(() {
-                print("refreshed");
-              });
             },
             child: const Text('Add Member'),
           ),

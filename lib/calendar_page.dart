@@ -21,7 +21,7 @@ class _CalendarState extends State<CalendarPage> {
   static final List<Meeting> meetings = <Meeting>[];
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Projects Calendar")),
+      appBar: AppBar(title: const Text("My Calendar")),
       body: SfCalendar(
         view: CalendarView.month,
         dataSource: MeetingDataSource(meetings),

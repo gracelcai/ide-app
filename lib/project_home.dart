@@ -100,7 +100,7 @@ class _ProjectHomeState extends State<ProjectHome> {
               MaterialPageRoute(
                   builder: (context) => EditProject(
                         id: widget.id,
-                      ))).then((_) => setState(() {}));
+                      ))).then((value) => setState(() {}));
         },
         child: Icon(Icons.edit),
       ),

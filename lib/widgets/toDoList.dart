@@ -32,7 +32,7 @@ class _TodoListState extends State<TodoList> {
               return Text("none");
             case ConnectionState.active:
             case ConnectionState.waiting:
-              return Text("active and waiting");
+              return Center(child: CircularProgressIndicator());
             case ConnectionState.done:
               return buildPage(snapshot.data as Scaffold);
             default:
@@ -93,25 +93,39 @@ class _TodoListState extends State<TodoList> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Add a task to your list'),
-            content: Column(
-              children: [
-                TextField(
-                  controller: newTask,
-                  decoration:
-                      const InputDecoration(hintText: 'Enter task here'),
-                ),
-                TextField(
-                  controller: month,
-                  keyboardType: TextInputType.number,
-                  decoration:
-                      const InputDecoration(hintText: 'Enter month here'),
-                ),
-                TextField(
-                  controller: day,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(hintText: 'Enter day here'),
-                ),
-              ],
+            content: Container(
+              height: 200,
+              width: 200,
+              child: Column(
+                children: [
+                  TextField(
+                    controller: newTask,
+                    decoration:
+                        const InputDecoration(hintText: 'Enter task here'),
+                  ),
+                  Row(
+                    children: [
+                      Flexible(
+                        child: TextField(
+                          controller: month,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(hintText: 'MM'),
+                        ),
+                      ),
+                      Flexible(
+                        child: Text("  /  "),
+                      ),
+                      Flexible(
+                        child: TextField(
+                          controller: day,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(hintText: 'DD'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
             // TextField(
             //   controller: newTask,

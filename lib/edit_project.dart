@@ -105,14 +105,17 @@ class _EditProjectState extends State<EditProject> {
                     // you'd often call a server or save the information in a database.
 
                     final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-                    await context.read<DatabaseService>().updateProject(
+                    context
+                        .read<DatabaseService>()
+                        .updateProject(
                           widget.id,
                           titleTextController.text,
                           descriptionTextController.text,
                           goalsTextController.text,
-                        );
+                        )
+                        .then((value) => Navigator.pop(context));
                     //also needs to somehow make a project that shows up in home page
-                    Navigator.pop(context);
+
                   }
                 },
                 child: const Text('Update Project'),
